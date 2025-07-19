@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools >= 78.1.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ArchipelagoPy"
+version = "0.1.0"
+authors = [
+    { name = "BlackoutRoulette", email = "blackoutroulette@live.de" },
+]
+description = "A network client library for the Archipelago Randomizer"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "websockets>=10.4",
+    "pydantic>=2.11.7"
+]
+
+[project.optional-dependencies]
+dev = ["ruff>=0.11.13"]
+
+[tool.ruff.lint]
+extend-select = [
+    "ASYNC", # flake8-async
+    "C4", # flake8-comprehensions
+    "DTZ", # flake8-datetimez
+    "FA", # flake8-future-annotations
+    "LOG", # flake8-logging
+    "G",
+    "INP",
+    "PIE",
+    "PYI",
+    "RET",
+    "SLF",
+    "SIM",
+    "SLOT",
+    "TID",
+    "TC",
+    "ARG",
+    "C90",
+    "N",
+    "PERF",
+    "F",
+    "PL",
+    "UP",
+    "FURB",
+    "RUF"
+]
