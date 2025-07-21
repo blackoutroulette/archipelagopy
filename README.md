@@ -1,5 +1,7 @@
 # ArchipelagoPy
-ArchipelagoPy is a Python library which implements the Archipelago Network Protocol and aims to provide type safety.
+ArchipelagoPy is a Python library which implements the Archipelago Network Protocol and automatically parses all network data into Python classes using Pydantic.
+ArchipelagoPy aims to provide an easy to use, bare minimum implementation and type safety regarding the Archipelago protocol,
+allowing developers to create their own clients or servers for the Archipelago network.
 
 # How to install
 
@@ -70,3 +72,6 @@ class MyClient(Client):
         print("Authenticated to the server")
         # You can send packets here or perform other actions
 ```
+
+# Further Documentation
+For further documentation please refer to the [Archipelago Network Protocol](https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/network%20protocol.md)
