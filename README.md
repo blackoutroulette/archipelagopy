@@ -1,5 +1,5 @@
 # ArchipelagoPy
-ArchipelagoPy is a Python library which implements the Archipelago Network Protocol and automatically parses all network data into Python classes using Pydantic.
+ArchipelagoPy is a Python library which implements the Archipelago Network Protocol by parsing all network data into Python classes using Pydantic and Asyncio.
 ArchipelagoPy aims to provide an easy to use, bare minimum implementation and type safety regarding the Archipelago protocol,
 allowing developers to create their own clients or servers for the Archipelago network.
 
@@ -59,8 +59,11 @@ Callbacks can be dynamically overridden like this:
 ```python
 from archipelago_py import Client
 
+async def on_ready():
+    print("Connected to the server")
+
 client = Client(port=12345)
-client.on_ready = lambda: print("Connected to the server")
+client.on_ready = on_ready
 ```
 
 A more clean approach is to subclass the `Client` class and override the methods:
