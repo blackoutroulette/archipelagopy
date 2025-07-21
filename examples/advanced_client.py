@@ -3,6 +3,7 @@ import logging
 from asyncio import Server
 
 from archipelago_py import packets
+from archipelago_py.callback_interface import OnConnectExceptionUnion
 from archipelago_py.client import Client
 from archipelago_py.enums.item_handling_flag import ItemHandlingFlag
 from archipelago_py.packets import Connect
@@ -18,12 +19,16 @@ class CustomClient(Client):
         conn = Connect(
             version=packet.version,
             tags=("Tracker",),
-            name="Player1", # Slot name
+            name="BlackoutRoulette", # Slot name
             items_handling=ItemHandlingFlag.OWN_WORLD | ItemHandlingFlag.OTHER_WORLDS,
             slot_data=True
         )
 
         await self.send(conn)
+
+    async def on_connect_error(self, error: OnConnectExceptionUnion):
+        print("Connection error:", error)
+        stop_event.set() # Simulate main program logic stop
 
     async def on_connection_refused(self, packet: packets.ConnectionRefused):
         print("Connection refused:", packet.errors)
@@ -41,15 +46,14 @@ async def runner():
     """
     logging.basicConfig(level=logging.INFO)
 
-    async with CustomClient(12345):
+    async with CustomClient(62805) as client:
         await stop_event.wait() # Simulate main program logic
-
 
 def main():
     try:
         asyncio.run(runner())
     except KeyboardInterrupt:
-        stop_event.set()
+        stop_event.set() # Simulate main program logic stop
 
 
 if __name__ == "__main__":

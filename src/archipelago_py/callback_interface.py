@@ -1,5 +1,14 @@
+import websockets.exceptions
+
 from archipelago_py import packets
 
+OnConnectExceptionUnion = (
+    websockets.exceptions.InvalidURI |
+    websockets.exceptions.InvalidHandshake |
+    websockets.exceptions.InvalidProxy |
+    TimeoutError |
+    OSError
+)
 
 class ClientCallbackInterface:
 
@@ -12,11 +21,17 @@ class ClientCallbackInterface:
         Called when the client is ready to send and receive packets.
         """
 
+    def on_connect_error(self, error: OnConnectExceptionUnion):
+        """
+        Called when an error occurs during the connection to the server
+        """
+
     async def on_packet(self, packet: packets.ServerPacket):
         """
         Called when a packet is received from the server.
         This is a wildcard method that can be overridden to handle any packet type and
-        will be called before any specific packet handler methods.
+        will be called before any specific packet handler methods. Changes made to the packet
+        in this method will be reflected in the specific packet handler methods.
         """
 
     async def on_bounced(self, packet: packets.Bounced):

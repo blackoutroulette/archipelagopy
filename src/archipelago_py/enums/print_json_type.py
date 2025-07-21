@@ -7,20 +7,21 @@ class PrintJSONType(StrEnum):
     by the client and can also contain additional arguments. When receiving an unknown or missing type,
     the data's list[JSONMessagePart] should still be displayed to the player as normal text.
 
-    :ivar ITEM_SEND: A player received an item.
-    :ivar ITEM_CHEAT: A player used the !getitem command.
-    :ivar HINT: The player with the same slot which you are connected to has hinted an item. (Hints are only shown to you.)
-    :ivar JOIN: A player connected.
-    :ivar PART: A player disconnected.
-    :ivar CHAT: A player sent a chat message.
+    :ivar ITEM_SEND: A client received an item.
+    :ivar ITEM_CHEAT: A client used the !getitem (cheat) command.
+    :ivar HINT: Send when a client uses the !hint command. You need to be either connected to
+     the receiver or finder slot of the hint to receive this packet.
+    :ivar JOIN: A new client connected and authenticated to a slot.
+    :ivar PART: A client disconnected from a slot.
+    :ivar CHAT: A client sent a chat message.
     :ivar SERVER_CHAT: The server broadcasted a message.
-    :ivar TUTORIAL: The client has triggered a tutorial message, such as when first connecting.
-    :ivar TAGS_CHANGED: A player changed their tags.
+    :ivar TUTORIAL: A client has triggered a tutorial message, such as when first connecting.
+    :ivar TAGS_CHANGED: A client changed their tags.
     :ivar COMMAND_RESULT: Someone (usually the client) entered an ! command.
-    :ivar ADMIN_COMMAND_RESULT: The client entered an !admin command.
-    :ivar GOAL: A player reached their goal.
-    :ivar RELEASE: A player released the remaining items in their world.
-    :ivar COLLECT: A player collected the remaining items for their world.
+    :ivar ADMIN_COMMAND_RESULT: A client used the !admin command.
+    :ivar GOAL: A client reached their goal.
+    :ivar RELEASE: A client used the !release command.
+    :ivar COLLECT: A client used the !collect command.
     :ivar COUNTDOWN: The current server countdown has progressed.
 
     `PrintJSONType on github.com/ArchipelagoMW`_.
