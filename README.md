@@ -3,12 +3,19 @@ ArchipelagoPy is a Python library which implements the Archipelago Network Proto
 ArchipelagoPy aims to provide an easy to use, bare minimum implementation and type safety regarding the Archipelago protocol,
 allowing developers to create their own clients or servers for the Archipelago network.
 
+# Features
+- **Type Safety**: Uses Pydantic and Type Hints for data validation and type safety.
+- **Asynchronous**: Built on top of Python's `asyncio` for non-blocking I/O operations.
+- **Packet Handling**: Automatically parses packets according to the Archipelago protocol.
+- **Callbacks**: Provides a callback system to handle network events.
+
 # How to install
 
 ArchipelagoPy can easily be installed using pip:
 ```bash
 pip install git+https://github.com/blackoutroulette/ArchipelagoPy.git
 ```
+A Python version of 3.10 or higher is required to run ArchipelagoPy.
 
 # How to use
 
@@ -78,3 +85,9 @@ class MyClient(Client):
 
 # Further Documentation
 For further documentation please refer to the [Archipelago Network Protocol](https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/network%20protocol.md)
+
+# License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+# Contributing
+Contributions are welcome! Please open an issue about your changes prior to writing a pull request. In the issue please mention if it is a bug fix or feature request.

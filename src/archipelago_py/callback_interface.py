@@ -6,6 +6,7 @@ OnConnectExceptionUnion = (
     websockets.exceptions.InvalidURI |
     websockets.exceptions.InvalidHandshake |
     websockets.exceptions.InvalidProxy |
+    ConnectionRefusedError |
     TimeoutError |
     OSError
 )
@@ -24,6 +25,17 @@ class ClientCallbackInterface:
     def on_connect_error(self, error: OnConnectExceptionUnion):
         """
         Called when an error occurs during the connection to the server
+        """
+
+    async def on_server_shutdown(self):
+        """
+        Called when the server is shutting down due lobby inactivity and closes the connection.
+        """
+
+    async def on_received(self, packet: str):
+        """
+        Called when a raw packet is received from the server. This should be a json string.
+        :param packet: The raw unparsed json packet received from the server.
         """
 
     async def on_packet(self, packet: packets.ServerPacket):
