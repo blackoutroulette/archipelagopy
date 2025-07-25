@@ -1,0 +1,1 @@
+[{"cmd":"Connect","version":{"major":0,"minor":6,"build":2,"class":"Version"},"tags":["AP"],"name":"Player1","items_handling":3,"game":"Game_One","slot_data":true,"password":"123456","uuid":""}]
