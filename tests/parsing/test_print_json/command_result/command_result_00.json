@@ -1,0 +1,9 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "Traceback (most recent call last):\n  File \"/Projects/Archipelago/MultiServer.py\", line 1277, in __call__\n    return method(self)  # argument may be optional, try running without args\nTypeError: ClientMessageProcessor._cmd_getitem() missing 1 required positional argument: 'item_name'\n"
+    }
+  ],
+  "type": "CommandResult"
+}

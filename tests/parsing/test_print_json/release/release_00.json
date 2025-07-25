@@ -1,0 +1,11 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "player1 (Team #1) has released all remaining items from their world."
+    }
+  ],
+  "type": "Release",
+  "team": 0,
+  "slot": 1
+}

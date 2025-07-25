@@ -1,0 +1,10 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "[Server]: 9"
+    }
+  ],
+  "type": "Countdown",
+  "countdown": 9
+}

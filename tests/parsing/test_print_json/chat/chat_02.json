@@ -1,0 +1,12 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "player3: !release"
+    }
+  ],
+  "type": "Chat",
+  "team": 0,
+  "slot": 3,
+  "message": "!release"
+}

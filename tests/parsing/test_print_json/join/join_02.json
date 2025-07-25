@@ -1,0 +1,14 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "player5 (Team #1) tracking APBingo has joined. Client(0.5.1), ['Tracker']."
+    }
+  ],
+  "type": "Join",
+  "team": 0,
+  "slot": 5,
+  "tags": [
+    "Tracker"
+  ]
+}

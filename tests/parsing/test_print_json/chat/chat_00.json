@@ -1,0 +1,12 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "player9: !countdown"
+    }
+  ],
+  "type": "Chat",
+  "team": 0,
+  "slot": 9,
+  "message": "!countdown"
+}

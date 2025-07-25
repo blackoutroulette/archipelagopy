@@ -1,0 +1,14 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "player1 (Team #1) has changed tags from [] to ['DeathLink']."
+    }
+  ],
+  "type": "TagsChanged",
+  "team": 0,
+  "slot": 1,
+  "tags": [
+    "DeathLink"
+  ]
+}

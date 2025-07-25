@@ -1,0 +1,11 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "player7 (Team #1) has left the game. Client(0.6.1), ['AP']."
+    }
+  ],
+  "type": "Part",
+  "team": 0,
+  "slot": 7
+}

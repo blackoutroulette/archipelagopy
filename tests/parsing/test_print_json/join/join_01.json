@@ -1,0 +1,14 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "player7 (Team #1) playing Mega Man X has joined. Client(0.6.1), ['AP']."
+    }
+  ],
+  "type": "Join",
+  "team": 0,
+  "slot": 7,
+  "tags": [
+    "AP"
+  ]
+}

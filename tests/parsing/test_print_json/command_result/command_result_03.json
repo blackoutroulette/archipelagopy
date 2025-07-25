@@ -1,0 +1,9 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "Could not find command itemget. Known commands: help, license, countdown, options, admin, players, status, release, collect, remaining, missing, checked, alias, getitem, hint, hint_location, video"
+    }
+  ],
+  "type": "CommandResult"
+}

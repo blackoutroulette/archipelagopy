@@ -1,0 +1,9 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "A hint costs 101 points. You have 0 points."
+    }
+  ],
+  "type": "CommandResult"
+}

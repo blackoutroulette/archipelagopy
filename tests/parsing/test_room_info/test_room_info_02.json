@@ -1,0 +1,53 @@
+{
+  "cmd": "RoomInfo",
+  "password": false,
+  "games": [
+    "Metroid Zero Mission",
+    "Kingdom Hearts",
+    "The Wind Waker",
+    "Timespinner",
+    "Archipelago",
+    "Yacht Dice",
+    "Ocarina of Time",
+    "Air Delivery",
+    "A Hat in Time",
+    "A Short Hike"
+  ],
+  "tags": [
+    "AP",
+    "WebHost"
+  ],
+  "version": {
+    "major": 0,
+    "minor": 6,
+    "build": 2,
+    "class": "Version"
+  },
+  "generator_version": {
+    "major": 0,
+    "minor": 6,
+    "build": 2,
+    "class": "Version"
+  },
+  "permissions": {
+    "release": 6,
+    "remaining": 2,
+    "collect": 6
+  },
+  "hint_cost": 14,
+  "location_check_points": 1,
+  "datapackage_checksums": {
+    "Archipelago": "ac9141e9ad0318df2fa27da5f20c50a842afeecb",
+    "A Short Hike": "233dd3b4c773aeea9ffd994b87f2773fe652877c",
+    "Kingdom Hearts": "23d6eecdbe0f006508e60a9f7f171850d4134963",
+    "Yacht Dice": "ef932cdf507713c47b8a5b1889a77cfee33356f8",
+    "A Hat in Time": "294cc7fc5ff1aa2a9669106ab8bf0a37e5d74f0d",
+    "The Wind Waker": "5896627ac12c80d99a60d82d1534575defba4dc1",
+    "Ocarina of Time": "d110c94f28cdb0b193803a81749342b4fc31ceba",
+    "Timespinner": "66dbcd73a5aae31b7d135c6752b54f4ae5b6a3d3",
+    "Metroid Zero Mission": "d7266b77b40be3bc0d038e9f649604c2f2e14240",
+    "Air Delivery": "0bc8379f4d6a05522fb0d1d50f8fa7d5d38ab093"
+  },
+  "seed_name": "87607670633894039384",
+  "time": 1753373221.764004
+}

@@ -1,0 +1,9 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "Sorry, client collecting requires you to have beaten the game on this server. You can ask the server admin for a /collect"
+    }
+  ],
+  "type": "CommandResult"
+}

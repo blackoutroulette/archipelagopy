@@ -1,0 +1,45 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "4",
+      "type": "player_id"
+    },
+    {
+      "text": " sent "
+    },
+    {
+      "text": "16777293",
+      "player": 3,
+      "flags": 1,
+      "type": "item_id"
+    },
+    {
+      "text": " to "
+    },
+    {
+      "text": "3",
+      "type": "player_id"
+    },
+    {
+      "text": " ("
+    },
+    {
+      "text": "16871244507",
+      "player": 4,
+      "type": "location_id"
+    },
+    {
+      "text": ")"
+    }
+  ],
+  "type": "ItemSend",
+  "receiving": 3,
+  "item": {
+    "item": 16777293,
+    "location": 16871244507,
+    "player": 4,
+    "flags": 1,
+    "class": "NetworkItem"
+  }
+}

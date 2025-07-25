@@ -1,0 +1,13 @@
+{
+  "cmd": "ReceivedItems",
+  "index": 15,
+  "items": [
+    {
+      "item": 797301,
+      "location": 1230004,
+      "player": 9,
+      "flags": 1,
+      "class": "NetworkItem"
+    }
+  ]
+}

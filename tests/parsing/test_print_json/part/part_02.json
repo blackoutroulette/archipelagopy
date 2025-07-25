@@ -1,0 +1,11 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "player5 (Team #1) has stopped tracking the game. Client(0.5.1), ['Tracker']."
+    }
+  ],
+  "type": "Part",
+  "team": 0,
+  "slot": 5
+}

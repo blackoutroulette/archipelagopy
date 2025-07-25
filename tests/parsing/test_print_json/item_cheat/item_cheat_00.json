@@ -1,0 +1,18 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "Cheat console: sending \"Ocarina\" to P1 (Player1)"
+    }
+  ],
+  "type": "ItemCheat",
+  "team": 0,
+  "receiving": 1,
+  "item": {
+    "item": 66139,
+    "location": -1,
+    "player": 1,
+    "flags": 0,
+    "class": "NetworkItem"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "player4: !hint categories"
+    }
+  ],
+  "type": "Chat",
+  "team": 0,
+  "slot": 4,
+  "message": "!hint categories"
+}

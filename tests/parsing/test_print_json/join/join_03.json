@@ -1,0 +1,16 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "player8 (Team #1) tracking Mega Man X2 has joined. Client(0.5.1), ['PopTracker', 'NoText', 'Tracker']."
+    }
+  ],
+  "type": "Join",
+  "team": 0,
+  "slot": 8,
+  "tags": [
+    "PopTracker",
+    "NoText",
+    "Tracker"
+  ]
+}

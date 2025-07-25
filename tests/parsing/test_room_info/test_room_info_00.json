@@ -1,0 +1,53 @@
+{
+  "cmd": "RoomInfo",
+  "password": false,
+  "games": [
+    "Spyro 3",
+    "Mega Man X2",
+    "APBingo",
+    "Jigsaw",
+    "Hollow Knight",
+    "Yacht Dice",
+    "Timespinner",
+    "Mega Man X",
+    "FNaFW",
+    "Archipelago"
+  ],
+  "tags": [
+    "AP",
+    "WebHost"
+  ],
+  "version": {
+    "major": 0,
+    "minor": 6,
+    "build": 2,
+    "class": "Version"
+  },
+  "generator_version": {
+    "major": 0,
+    "minor": 6,
+    "build": 2,
+    "class": "Version"
+  },
+  "permissions": {
+    "release": 2,
+    "remaining": 2,
+    "collect": 0
+  },
+  "hint_cost": 5,
+  "location_check_points": 1,
+  "datapackage_checksums": {
+    "Archipelago": "ac9141e9ad0318df2fa27da5f20c50a842afeecb",
+    "Timespinner": "66dbcd73a5aae31b7d135c6752b54f4ae5b6a3d3",
+    "Hollow Knight": "93fad68f24dcb8d9dd7f616ce5e376117fcedf32",
+    "Yacht Dice": "ef932cdf507713c47b8a5b1889a77cfee33356f8",
+    "FNaFW": "311fc76438557690d56491c688339e0ceec53278",
+    "APBingo": "e4d5589643d5809ebea2f26d2eb85e4a7d4e4fdd",
+    "Jigsaw": "b7aeaec7ed2c9ec2d0d1d2daeac6fc81d0554e64",
+    "Mega Man X": "d536d2a95dbe319ee559d110c7668fc69c967a34",
+    "Mega Man X2": "9f42696391f6ac7b3cbb417fb3c50f5380087da0",
+    "Spyro 3": "7a6f68b82f46bf08ba2041781dafc33801cd01cc"
+  },
+  "seed_name": "18507606283488823952",
+  "time": 1753180830.1278174
+}

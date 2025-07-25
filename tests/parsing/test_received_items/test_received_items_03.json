@@ -1,0 +1,48 @@
+{
+  "cmd": "ReceivedItems",
+  "index": 115,
+  "items": [
+    {
+      "item": 797300,
+      "location": 1266002,
+      "player": 9,
+      "flags": 2,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 797301,
+      "location": 1257004,
+      "player": 9,
+      "flags": 1,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 797301,
+      "location": 1261003,
+      "player": 9,
+      "flags": 1,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 797305,
+      "location": 1240007,
+      "player": 9,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 797305,
+      "location": 1262000,
+      "player": 9,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 797309,
+      "location": 1240001,
+      "player": 9,
+      "flags": 0,
+      "class": "NetworkItem"
+    }
+  ]
+}

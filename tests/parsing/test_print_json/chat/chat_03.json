@@ -1,0 +1,12 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "player8: looks like I have to give up"
+    }
+  ],
+  "type": "Chat",
+  "team": 0,
+  "slot": 8,
+  "message": "looks like I have to give up"
+}

@@ -1,0 +1,14 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "player2 (Team #1) tracking FNaFW has joined. Client(0.6.2), ['Tracker']."
+    }
+  ],
+  "type": "Join",
+  "team": 0,
+  "slot": 2,
+  "tags": [
+    "Tracker"
+  ]
+}

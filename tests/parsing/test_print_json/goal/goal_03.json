@@ -1,0 +1,11 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "player4 (Team #1) has completed their goal."
+    }
+  ],
+  "type": "Goal",
+  "team": 0,
+  "slot": 4
+}

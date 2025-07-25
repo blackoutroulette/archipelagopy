@@ -1,0 +1,12 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "player3 (Team #1) playing Hollow Knight has joined. Client(0.5.0), []."
+    }
+  ],
+  "type": "Join",
+  "team": 0,
+  "slot": 3,
+  "tags": []
+}

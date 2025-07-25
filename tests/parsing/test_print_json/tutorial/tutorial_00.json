@@ -1,0 +1,9 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "Now that you are connected, you can use !help to list commands to run via the server. If your client supports it, you may have additional local commands you can list with /help."
+    }
+  ],
+  "type": "Tutorial"
+}
