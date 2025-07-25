@@ -5,7 +5,7 @@ import pytest
 from archipelago_py import packets, enums
 from tests.parsing import PATH
 
-@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/countdown").glob("*.json")])
+@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/countdown").glob("*.json")], ids=lambda p: p.name)
 def test_countdown(file: Path):
 
     data: str = file.read_text(encoding="utf-8")
@@ -16,7 +16,7 @@ def test_countdown(file: Path):
     assert packet.type == enums.PrintJSONType.COUNTDOWN
 
 
-@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/tags_changed").glob("*.json")])
+@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/tags_changed").glob("*.json")], ids=lambda p: p.name)
 def test_tags_changed(file: Path):
 
     data: str = file.read_text(encoding="utf-8")
@@ -27,7 +27,7 @@ def test_tags_changed(file: Path):
     assert packet.type == enums.PrintJSONType.TAGS_CHANGED
 
 
-@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/join").glob("*.json")])
+@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/join").glob("*.json")], ids=lambda p: p.name)
 def test_join(file: Path):
 
     data: str = file.read_text(encoding="utf-8")
@@ -38,7 +38,7 @@ def test_join(file: Path):
     assert packet.type == enums.PrintJSONType.JOIN
 
 
-@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/tutorial").glob("*.json")])
+@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/tutorial").glob("*.json")], ids=lambda p: p.name)
 def test_tutorial(file: Path):
 
     data: str = file.read_text(encoding="utf-8")
@@ -49,7 +49,7 @@ def test_tutorial(file: Path):
     assert packet.type == enums.PrintJSONType.TUTORIAL
 
 
-@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/chat").glob("*.json")])
+@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/chat").glob("*.json")], ids=lambda p: p.name)
 def test_chat(file: Path):
 
     data: str = file.read_text(encoding="utf-8")
@@ -60,7 +60,7 @@ def test_chat(file: Path):
     assert packet.type == enums.PrintJSONType.CHAT
 
 
-@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/item_send").glob("*.json")])
+@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/item_send").glob("*.json")], ids=lambda p: p.name)
 def test_item_send(file: Path):
 
     data: str = file.read_text(encoding="utf-8")
@@ -71,7 +71,7 @@ def test_item_send(file: Path):
     assert packet.type == enums.PrintJSONType.ITEM_SEND
 
 
-@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/part").glob("*.json")])
+@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/part").glob("*.json")], ids=lambda p: p.name)
 def test_part(file: Path):
 
     data: str = file.read_text(encoding="utf-8")
@@ -82,7 +82,7 @@ def test_part(file: Path):
     assert packet.type == enums.PrintJSONType.PART
 
 
-@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/hint").glob("*.json")])
+@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/hint").glob("*.json")], ids=lambda p: p.name)
 def test_hint(file: Path):
 
     data: str = file.read_text(encoding="utf-8")
@@ -93,7 +93,7 @@ def test_hint(file: Path):
     assert packet.type == enums.PrintJSONType.HINT
 
 
-@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/goal").glob("*.json")])
+@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/goal").glob("*.json")], ids=lambda p: p.name)
 def test_goal(file: Path):
 
     data: str = file.read_text(encoding="utf-8")
@@ -104,7 +104,7 @@ def test_goal(file: Path):
     assert packet.type == enums.PrintJSONType.GOAL
 
 
-@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/release").glob("*.json")])
+@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/release").glob("*.json")], ids=lambda p: p.name)
 def test_release(file: Path):
 
     data: str = file.read_text(encoding="utf-8")
@@ -115,7 +115,7 @@ def test_release(file: Path):
     assert packet.type == enums.PrintJSONType.RELEASE
 
 
-@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/command_result").glob("*.json")])
+@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/command_result").glob("*.json")], ids=lambda p: p.name)
 def test_command_result(file: Path):
 
     data: str = file.read_text(encoding="utf-8")
@@ -126,7 +126,7 @@ def test_command_result(file: Path):
     assert packet.type == enums.PrintJSONType.COMMAND_RESULT
 
 
-@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/item_cheat").glob("*.json")])
+@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/item_cheat").glob("*.json")], ids=lambda p: p.name)
 def test_item_cheat(file: Path):
 
     data: str = file.read_text(encoding="utf-8")
@@ -137,7 +137,7 @@ def test_item_cheat(file: Path):
     assert packet.type == enums.PrintJSONType.ITEM_CHEAT
 
 
-@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/no_type").glob("*.json")])
+@pytest.mark.parametrize("file", [p for p in (PATH/"test_print_json/no_type").glob("*.json")], ids=lambda p: p.name)
 def test_no_type(file: Path):
 
     data: str = file.read_text(encoding="utf-8")

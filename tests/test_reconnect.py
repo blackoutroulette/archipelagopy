@@ -38,7 +38,6 @@ async def test_reconnect_close_codes(close_code: websockets.CloseCode):
 
             async with Client(port, host="localhost", secure=False) as client:
                 await stop_event.wait()
-                print("stop")
 
         assert client._get_reconnect_frequency() == 2
 

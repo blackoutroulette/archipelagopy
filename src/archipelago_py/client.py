@@ -185,7 +185,6 @@ class Client(CCInterface):
         )
 
         reconnect_frequency: int = self._get_reconnect_frequency()
-        print(f"Reconnect frequency: {reconnect_frequency}")
 
         # wait with exponential backoff before trying to reconnect
         await asyncio.sleep(

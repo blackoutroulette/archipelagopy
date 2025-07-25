@@ -5,7 +5,7 @@ import pytest
 from archipelago_py import packets
 from tests.parsing import PATH
 
-@pytest.mark.parametrize("file", [p for p in (PATH/"test_room_update").glob("*.json")])
+@pytest.mark.parametrize("file", [p for p in (PATH/"test_room_update").glob("*.json")], ids=lambda p: p.name)
 def test_model(file: Path):
 
     data: str = file.read_text(encoding="utf-8")
