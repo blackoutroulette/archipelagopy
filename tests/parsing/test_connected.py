@@ -3,13 +3,9 @@ from pathlib import Path
 import pytest
 
 from archipelago_py import packets
-from tests.parsing import PATH
+from tests.parsing import PATH, parse_json
+
 
 @pytest.mark.parametrize("file", [p for p in (PATH/"test_connected").glob("*.json")], ids=lambda p: p.name)
 def test_model(file: Path):
-
-    data: str = file.read_text(encoding="utf-8")
-    assert data  # Ensure the file is not empty
-
-    packet = packets.Connected.model_validate_json(json_data=data)
-    assert isinstance(packet, packets.Connected)
+    parse_json(file, packets.Connected)
