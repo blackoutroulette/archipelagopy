@@ -62,7 +62,7 @@ A more advanced example can be found in the `examples` directory of the reposito
 Callbacks are used to handle events in the Archipelago client. The `Client` class provides several callback methods that can be overridden to respond to specific events, such as when the client connects to the server, receives a packet, or disconnects.
 For a complete list of available callback functions, refer to the `ClientCallbackInterface` class.
 
-Callbacks can be dynamically overridden like this:
+Callbacks can be dynamically overridden (monkey patched) like this:
 ```python
 from archipelago_py import Client
 
