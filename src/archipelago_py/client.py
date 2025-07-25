@@ -92,10 +92,6 @@ class Client(CCInterface):
         self._sender_task: asyncio.Task | None = None
         self._stop_event: asyncio.Event = asyncio.Event()
 
-        # Save last successful connect packet to reconnect in case of connection loss
-        self._connect_packet_queue: asyncio.Queue[packets.Connect] = asyncio.Queue()
-        self._last_successful_connect_packet: packets.Connect | None = None
-
         # keep track of server connection close events
         self._reconnect_timestamps: list[float] = []
 
@@ -138,8 +134,8 @@ class Client(CCInterface):
         return callback
 
     async def _loop_handler(self):
-        self._receiver_task = asyncio.create_task(self._receive_loop())
-        self._sender_task = asyncio.create_task(self._send_loop())
+        self._receiver_task = asyncio.create_task(self._task_wrapper(self._receive_loop))
+        self._sender_task = asyncio.create_task(self._task_wrapper(self._send_loop))
         done, pending = await asyncio.wait(
             [self._receiver_task, self._sender_task],
             return_when=asyncio.FIRST_COMPLETED,
@@ -197,15 +193,6 @@ class Client(CCInterface):
 
         return websockets.connect(self._addr)
 
-    async def _handle_reauthentication(self):
-        if self._last_successful_connect_packet is not None:
-            # if we have a last successful connect packet, send it again
-            _LOGGER.info("[%s]: Reconnecting with last successful connect packet", self._addr)
-            await self._socket.send(
-                packet_to_json(self._last_successful_connect_packet)
-            )
-        else:
-            _LOGGER.info("[%s]: Connected", self._addr)
 
     async def _connect(self):
         ws: ClientConnection
@@ -216,12 +203,11 @@ class Client(CCInterface):
                 self._socket = ws
                 self._increase_reconnects()
 
-                await self._handle_reauthentication()
+                _LOGGER.info("[%s]: Connected", self._addr)
 
                 # fire on_ready event
                 ensure_callback_is_coroutine(self.on_ready)
                 await self.on_ready()
-
 
                 await self._loop_handler()
                 # if we are here, the connection was closed by the server
@@ -249,24 +235,7 @@ class Client(CCInterface):
         # signal that the client has stopped
         self._stop_event.set()
 
-
-    def _handle_connect_response(self, packet: packets.ServerPacket):
-        if self._connect_packet_queue.empty():
-            # should not happen, but just in case
-            return
-
-        if isinstance(packet, packets.Connected):
-            # if the packet last Connect packet was successful, save it
-            self._last_successful_connect_packet = self._connect_packet_queue.get_nowait()
-
-        if isinstance(packet, packets.ConnectionRefused):
-            # remove the connect packet from the queue if the connection was refused
-            # and reset the last successful connect packet
-            self._connect_packet_queue.get_nowait()
-            self._last_successful_connect_packet = None
-
     async def _process_packet(self, packet: packets.ServerPacket):
-        self._handle_connect_response(packet)
 
         # fire on_packet event
         ensure_callback_is_coroutine(self.on_packet)
@@ -278,49 +247,43 @@ class Client(CCInterface):
             ensure_callback_is_coroutine(callback)
             await callback(packet)
 
-    async def _receive_loop(self):
-
+    async def _task_wrapper(self, func: Callable[..., Awaitable]) -> None:
         try:
-            js: str
-            # loop will silently break if the connection is closed and will not raise an exception
-            async for js in self._socket:
-
-                # fire on_received event
-                ensure_callback_is_coroutine(self.on_received)
-                await self.on_received(js)
-
-                packet_list: list[packets.ServerPacket] = packets.PACKET_TYPE_ADAPTER.validate_json(js)
-
-                packet: packets.ServerPacket
-                await asyncio.gather(*[
-                    self._process_packet(packet) for packet in packet_list
-                ])
-        except websockets.ConnectionClosed as e:
-            _LOGGER.debug("[%s]: %s", self._addr, e)
+            await func()
         except asyncio.CancelledError:
-            pass
+            _LOGGER.debug("[%s][%s]: Task canceled", func.__name__, self._addr)
+        except websockets.exceptions.ConnectionClosed as e:
+            close_code = websockets.CloseCode(e.sent.code)
+            _LOGGER.debug("[%s][%s]: ConnectionClosed: %s(%s)", func.__name__, self._addr, close_code.name,  close_code.value)
+        except Exception as e:
+            _LOGGER.error("[%s][%s]: Exception: %s", func.__name__, self._addr, e)
 
-        _LOGGER.debug("[%s]: receive task stopped", self._addr)
+        _LOGGER.debug("[%s][%s]: Stopped", func.__name__, self._addr)
 
+    async def _receive_loop(self):
+        js: str
+        # loop will silently break if the connection is closed and will not raise an exception
+        async for js in self._socket:
+
+            # fire on_received event
+            ensure_callback_is_coroutine(self.on_received)
+            await self.on_received(js)
+
+            packet_list: list[packets.ServerPacket] = packets.PACKET_TYPE_ADAPTER.validate_json(js)
+
+            packet: packets.ServerPacket
+            await asyncio.gather(*[
+                self._process_packet(packet) for packet in packet_list
+            ])
 
     async def send(self, packet: packets.ClientPacket):
-        if isinstance(packet, packets.Connect):
-            self._connect_packet_queue.put_nowait(packet)
-
         json_data: str = packet_to_json(packet)
         await self._send_queue.put(json_data)
 
     async def _send_loop(self):
-        try:
-            while True:
-                message: str = await self._send_queue.get()
-                await self._socket.send(message, text=True)
-        except websockets.ConnectionClosed as e:
-            _LOGGER.debug("[%s]: %s", self._addr, e)
-        except asyncio.CancelledError:
-            pass
-
-        _LOGGER.debug("[%s]: send task stopped", self._addr)
+        while True:
+            message: str = await self._send_queue.get()
+            await self._socket.send(message, text=True)
 
     async def __aenter__(self):
         await self.start()
