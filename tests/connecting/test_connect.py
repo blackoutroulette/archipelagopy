@@ -15,7 +15,7 @@ async def test_connect():
     client = Client(0, host="localhost", secure=False)
 
     # load the test data
-    test_data_path = (Path(__file__).parent/"test_connect/test_connect.txt")
+    test_data_path = (Path(__file__).parent/"test_connect.txt")
     test_data = dict([l.split(':', 1) for l in test_data_path.read_text("utf-8").splitlines()])
     assert test_data
 
