@@ -12,34 +12,36 @@ from archipelago_py import Client, packets, enums
 @pytest.mark.asyncio
 async def test_connect():
 
-    data_folder = Path(__file__).parent / "test_connect"
     client = Client(0, host="localhost", secure=False)
 
     # load the test data
-    client_connect_packet = (data_folder/"client_connect_packet.txt").read_text("utf-8")
-    server_post_connected = (data_folder/"server_post_connected.txt").read_text("utf-8").splitlines()
-    room_info = (data_folder/"room_info.txt").read_text("utf-8")
+    test_data_path = (Path(__file__).parent/"test_connect/test_connect.txt")
+    test_data = dict([l.split(':', 1) for l in test_data_path.read_text("utf-8").splitlines()])
+    assert test_data
 
     # flags
-    room_info_flag = asyncio.Event()
-    connected_flag = asyncio.Event()
-    print_json_join_flag = asyncio.Event()
+    room_info_flag: bool = False
+    connected_flag: bool = False
+    print_json_join_flag: bool = False
     print_json_tutorial_flag = asyncio.Event()
 
 
     async def server_task_handler(ws: ServerConnection):
-        await ws.send(room_info)
+        await ws.send(test_data["room_info"])
 
         msg = await ws.recv()
-        assert msg == client_connect_packet
+        assert msg == test_data["connect"]
 
-        for line in server_post_connected:
-            await ws.send(line)
+        await ws.send(test_data["connected"])
+        await ws.send(test_data["join"])
+        await ws.send(test_data["tutorial"])
 
     async def on_room_info(packet: packets.RoomInfo):
         assert isinstance(packet, packets.RoomInfo)
-        assert packets.RoomInfo(**json.loads(room_info[1:-2])) == packet
-        room_info_flag.set()
+        assert packets.RoomInfo(**json.loads(test_data["room_info"])[0]) == packet
+
+        nonlocal room_info_flag
+        room_info_flag = True
 
         conn = packets.Connect(
             version=packet.version,
@@ -55,17 +57,22 @@ async def test_connect():
 
     async def on_connected(packet: packets.Connected):
         assert isinstance(packet, packets.Connected)
-        assert packets.Connected(**json.loads(server_post_connected[0])[0]) == packet
-        connected_flag.set()
+        assert packets.Connected(**json.loads(test_data["connected"])[0]) == packet
+
+        nonlocal connected_flag
+        connected_flag = True
 
     async def on_print_json(packet: packets.PrintJSON):
         assert isinstance(packet, packets.PrintJSON)
 
         if packet.type == enums.PrintJSONType.JOIN:
-            assert packets.PrintJSON(**json.loads(server_post_connected[1])[0]) == packet
-            print_json_join_flag.set()
+            assert packets.PrintJSON(**json.loads(test_data["join"])[0]) == packet
+
+            nonlocal print_json_join_flag
+            print_json_join_flag = True
+
         elif packet.type == enums.PrintJSONType.TUTORIAL:
-            assert packets.PrintJSON(**json.loads(server_post_connected[2])[0]) == packet
+            assert packets.PrintJSON(**json.loads(test_data["tutorial"])[0]) == packet
             print_json_tutorial_flag.set()
 
     async def run_server():
@@ -86,3 +93,9 @@ async def test_connect():
         assert client._get_reconnect_frequency() == 1
 
     await asyncio.wait_for(run_server(), timeout=1)
+
+    # check that all flags were set
+    assert room_info_flag
+    assert connected_flag
+    assert print_json_join_flag
+    assert print_json_tutorial_flag.is_set()
