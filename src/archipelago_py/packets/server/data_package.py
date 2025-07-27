@@ -1,6 +1,7 @@
 from typing import Literal
 
 from archipelago_py.packets.server.server_packet import ServerPacket
+from archipelago_py.structs.data_package_data import DataPackageData
 from archipelago_py.structs.game_data import GameData
 
 
@@ -22,4 +23,4 @@ class DataPackage(ServerPacket):
     """
 
     cmd: Literal["DataPackage"] = "DataPackage"
-    data: dict[str, GameData]
+    data: DataPackageData

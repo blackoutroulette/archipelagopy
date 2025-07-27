@@ -7,7 +7,9 @@ class GetDataPackage(ClientPacket):
     """
     Requests the data package from the server. Does not require client authentication.
 
-    :ivar games: Optional. If specified, will only send back the specified data. Such as, ["Factorio"] -> Datapackage with only Factorio data.
+    :ivar games: Specifies which games to request DataPackages of from the server.
+     Despite the official documentation saying this is optional, it is not.
+     Leaving this list empty returns an empty dictionary from the server.
 
     `GetDataPackage on github.com/ArchipelagoMW`_.
 
@@ -16,4 +18,5 @@ class GetDataPackage(ClientPacket):
     """
 
     cmd: Literal["GetDataPackage"] = "GetDataPackage"
-    games: list[str] | None = None
+    games: list[str]
+
