@@ -18,5 +18,5 @@ class ConnectUpdate(ClientPacket):
     """
 
     cmd: Literal["ConnectUpdate"] = "ConnectUpdate"
-    tags: tuple[str]
+    tags: list[str]
     items_handling: ItemHandlingFlag

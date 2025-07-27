@@ -19,5 +19,5 @@ class LocationScouts(ClientPacket):
     """
 
     cmd: Literal["LocationScouts"] = "LocationScouts"
-    locations: tuple[int, ...]
+    locations: list[int]
     create_as_hint: LocationScoutHint

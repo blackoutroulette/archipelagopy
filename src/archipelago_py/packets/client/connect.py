@@ -26,7 +26,7 @@ class Connect(ClientPacket):
 
     cmd: Literal["Connect"] = "Connect"
     version: Version
-    tags: tuple[str, ...]
+    tags: list[str]
     name: str
     items_handling: ItemHandlingFlag
     game: str | None = None

@@ -1,4 +1,4 @@
-from typing import Final, Literal
+from typing import Literal
 
 from archipelago_py.packets.client.client_packet import ClientPacket
 
@@ -20,7 +20,7 @@ class Bounce(ClientPacket):
     """
 
     cmd: Literal["Bounce"] = "Bounce"
-    games: Final[tuple[str, ...]]
-    tags: Final[tuple[str, ...]]
-    slots: Final[tuple[int, ...]]
-    data: Final[dict]
+    games: list[str]
+    tags: list[str]
+    slots: list[int]
+    data: dict

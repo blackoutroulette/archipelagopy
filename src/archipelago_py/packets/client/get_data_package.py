@@ -16,4 +16,4 @@ class GetDataPackage(ClientPacket):
     """
 
     cmd: Literal["GetDataPackage"] = "GetDataPackage"
-    games: tuple[str, ...] | None = None
+    games: list[str] | None = None
