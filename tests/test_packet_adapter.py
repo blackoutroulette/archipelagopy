@@ -5,6 +5,7 @@ import pytest
 from archipelago_py import packets, structs
 from archipelago_py.enums import ConnectionRefusedFlag, PacketProblemType, NetworkItemFlag
 from archipelago_py.packets import PACKET_TYPE_ADAPTER, ServerPacket
+from archipelago_py.structs.data_package_data import DataPackageData
 
 
 def test_bounced():
@@ -137,12 +138,14 @@ def test_data_package():
     js = [{
         'cmd': 'DataPackage',
         'data': {
-            "Game1": {
-                'item_name_to_id': {"Item1": 1, "Item2": 2},
-                'location_name_to_id': {"Location1": 100, "Location2": 200},
-                'checksum': "abc123",
-                "class": "GameData"
-            },
+            "games": {
+                "Game1": {
+                    'item_name_to_id': {"Item1": 1, "Item2": 2},
+                    'location_name_to_id': {"Location1": 100, "Location2": 200},
+                    'checksum': "abc123",
+                    "class": "GameData"
+                },
+            }
         }
     }]
 
@@ -160,13 +163,13 @@ def test_data_package():
     # command
     assert p.cmd == 'DataPackage'
     # data
-    assert isinstance(p.data, dict)
-    for game, data in j['data'].items():
-        assert game in p.data
-        assert isinstance(p.data[game], structs.GameData)
-        assert p.data[game].item_name_to_id == data['item_name_to_id']
-        assert p.data[game].location_name_to_id == data['location_name_to_id']
-        assert p.data[game].checksum == data['checksum']
+    assert isinstance(p.data, DataPackageData)
+    for game, data in j['data']['games'].items():
+        assert game in p.data.games
+        assert isinstance(p.data.games[game], structs.GameData)
+        assert p.data.games[game].item_name_to_id == data['item_name_to_id']
+        assert p.data.games[game].location_name_to_id == data['location_name_to_id']
+        assert p.data.games[game].checksum == data['checksum']
 
 
 @pytest.mark.parametrize("type_", [
