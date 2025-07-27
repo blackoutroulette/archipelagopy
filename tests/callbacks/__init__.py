@@ -5,7 +5,7 @@ import pytest
 import websockets
 from websockets import ServerConnection
 
-from archipelago_py import Client
+from archipelago_py import Client, packets
 
 
 class ServerClient:
@@ -13,7 +13,7 @@ class ServerClient:
     def __init__(self):
         self.stop_event = asyncio.Event()
         self.send_queue = asyncio.Queue()
-        self.client =  Client(0, host="localhost", secure=False)
+        self.client = Client(0, host="localhost", secure=False)
         self.task: asyncio.Task | None = None
 
     async def server_task_handler(self, ws: ServerConnection):
@@ -66,6 +66,7 @@ class ServerClient:
             await self.task
         await self.client.stop()
 
+
 @pytest.fixture(scope="module")
 def test_data():
     data_path = (Path(__file__).parent / "test_callbacks.txt")
@@ -74,34 +75,61 @@ def test_data():
 
     return data
 
-@pytest.fixture(scope="function")
-def server_client():
-    return ServerClient
 
-@pytest.fixture(scope="function")
-def callback_executed():
-    return asyncio.Event()
-
-
-def callback_test_decorator(raises: type[Exception] | None = None, timeout: float = 0.5):
+async def helper_test_callback_positive(test_data, packet_type: type[packets.ServerPacket], event_func: str):
     """
-    Decorator to run the test function with the server-client setup.
+    Test that the client can receive a DataPackage packet.
     """
-    def decorator(func):
-        async def wrapper(test_data, server_client, callback_executed):
-            callback_executed = asyncio.Event()
-            server_client = ServerClient()
 
-            await func(test_data, server_client, callback_executed)
+    assert test_data
 
-            async with server_client:
-                await asyncio.wait_for(callback_executed.wait(), timeout=timeout)
-            assert callback_executed.is_set()
-            server_client.stop_event.set()
+    server_client = ServerClient()
+    callback_executed = asyncio.Event()
 
-        async def raises_wrapper(test_data, server_client, callback_executed):
-            with pytest.raises(raises):
-               await wrapper(test_data, server_client, callback_executed)
+    async def on_callback(packet: packet_type):
+        assert isinstance(packet, packet_type)
+        callback_executed.set()
 
-        return raises_wrapper if raises else wrapper
-    return decorator
+    assert hasattr(server_client.client, event_func)
+    setattr(server_client.client, event_func, on_callback)
+
+    async with server_client:
+        await server_client.server_send(test_data[packet_type.__name__])
+        await asyncio.wait_for(callback_executed.wait(), timeout=0.5)
+
+    assert callback_executed.is_set()
+
+
+async def helper_test_callback_negative(test_data, packet_type: type[packets.ServerPacket], event_func: str):
+    """
+    Test that the client can receive a DataPackage packet.
+    """
+
+    assert test_data
+
+    server_client = ServerClient()
+    callback_executed = asyncio.Event()
+    packet_event = asyncio.Event()
+
+    async def on_packet(_: packets.ServerPacket):
+        packet_event.set()
+
+    server_client.client.on_packet = on_packet
+
+    async def on_callback(packet: packet_type):
+        assert isinstance(packet, packet_type)
+        callback_executed.set()
+
+    assert hasattr(server_client.client, event_func)
+    setattr(server_client.client, event_func, on_callback)
+
+    async with server_client:
+        for p in test_data:
+            if p == packet_type.__name__:
+                continue
+
+            await server_client.server_send(test_data[p])
+            await asyncio.wait_for(packet_event.wait(), timeout=0.5)
+            packet_event.clear()
+
+    assert not callback_executed.is_set()

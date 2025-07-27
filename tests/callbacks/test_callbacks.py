@@ -1,134 +1,179 @@
-from archipelago_py import packets
-from tests.callbacks import callback_test_decorator, test_data, server_client, callback_executed
+import asyncio
+from pathlib import Path
+from types import MappingProxyType
+
 import pytest
+
+from archipelago_py import packets
+from tests.callbacks import helper_test_callback_negative, helper_test_callback_positive, ServerClient
+
 
 # Todo: create test data for the callbacks and then implement all other tests
 
+@pytest.fixture(scope="module")
+def test_data() -> MappingProxyType[str, str]:
+    data_path = (Path(__file__).parent / "test_callbacks.txt")
+    data = MappingProxyType(dict([l.split(':', 1) for l in data_path.read_text("utf-8").splitlines()]))
+    assert data
+
+    return data
+
+
+@pytest.fixture(scope="function")
+def server_client():
+    return ServerClient()
+
 
 @pytest.mark.asyncio
-@callback_test_decorator()
-async def test_on_ready(test_data, server_client, callback_executed):
-    """
-    Test that the client is ready to send and receive packets.
-    """
+async def test_on_ready(test_data, server_client):
+    callback_executed = asyncio.Event()
+
     async def on_ready():
         callback_executed.set()
 
     server_client.client.on_ready = on_ready
 
+    async with server_client:
+        await asyncio.wait_for(callback_executed.wait(), timeout=0.5)
 
-@pytest.mark.asyncio
-@callback_test_decorator(raises=TimeoutError)
-async def test_on_ready_timeout(test_data, server_client, callback_executed):
-    """
-    Test that the setup will timeout if the callback_executed event is not set.
-    """
-    async def on_ready():
-        pass
-
-    server_client.client.on_ready = on_ready
+    assert callback_executed.is_set()
 
 
 @pytest.mark.asyncio
-@callback_test_decorator()
-async def test_on_received(test_data, server_client, callback_executed):
-    """
-    Test that the client can receive a raw packet.
-    """
-    async def on_received(packet: str):
-        assert isinstance(packet, str)
-        callback_executed.set()
+async def test_on_received(test_data, server_client):
+    received_event = asyncio.Event()
+
+    async def on_received(_: packets.ServerPacket):
+        received_event.set()
 
     server_client.client.on_received = on_received
 
-    await server_client.server_send(test_data["room_info"])
+    async with server_client:
+        for p in test_data:
+            await server_client.server_send(test_data[p])
+            await asyncio.wait_for(received_event.wait(), timeout=0.5)
+            received_event.clear()
 
 
 @pytest.mark.asyncio
-@callback_test_decorator()
-async def test_on_packet(test_data, server_client, callback_executed):
-    """
-    Test that the client can receive a packet.
-    """
-    async def on_packet(packet: str):
-        assert isinstance(packet, packets.RoomInfo)
-        callback_executed.set()
+async def test_on_packet(test_data, server_client):
+    packet_event = asyncio.Event()
+
+    async def on_packet(_: packets.ServerPacket):
+        packet_event.set()
 
     server_client.client.on_packet = on_packet
 
-    await server_client.server_send(test_data["room_info"])
+    async with server_client:
+        for p in test_data:
+            await server_client.server_send(test_data[p])
+            await asyncio.wait_for(packet_event.wait(), timeout=0.5)
+            packet_event.clear()
 
 
 @pytest.mark.asyncio
-@callback_test_decorator()
-async def test_on_bounced(test_data, server_client, callback_executed):
-    """
-    Test that the client can receive a Bounced packet.
-    """
-    async def on_bounced(packet: packets.Bounced):
-        assert isinstance(packet, packets.Bounced)
-        callback_executed.set()
-
-    server_client.client.on_bounced = on_bounced
-
-    await server_client.server_send(test_data["bounced"])
+async def test_on_bounced_positive(test_data):
+    await helper_test_callback_positive(
+        test_data,
+        packets.Bounced,
+        "on_bounced"
+    )
 
 
 @pytest.mark.asyncio
-@callback_test_decorator()
-async def test_on_connected(test_data, server_client, callback_executed):
-    """
-    Test that the client can receive a Connected packet.
-    """
-    async def on_connected(packet: packets.Connected):
-        assert isinstance(packet, packets.Connected)
-        callback_executed.set()
-
-    server_client.client.on_connected = on_connected
-
-    await server_client.server_send(test_data["connected"])
+async def test_on_bounced_negative(test_data):
+    await helper_test_callback_negative(
+        test_data,
+        packets.Bounced,
+        "on_bounced"
+    )
 
 
 @pytest.mark.asyncio
-@callback_test_decorator()
-async def test_on_connection_refused(test_data, server_client, callback_executed):
-    """
-    Test that the client can receive a ConnectionRefused packet.
-    """
-    async def on_connection_refused(packet: packets.ConnectionRefused):
-        assert isinstance(packet, packets.ConnectionRefused)
-        callback_executed.set()
-
-    server_client.client.on_connection_refused = on_connection_refused
-
-    await server_client.server_send(test_data["connection_refused"])
+async def test_on_connected(test_data):
+    await helper_test_callback_positive(
+        test_data,
+        packets.Connected,
+        "on_connected"
+    )
 
 
 @pytest.mark.asyncio
-@callback_test_decorator()
-async def test_on_room_update(test_data, server_client, callback_executed):
-    """
-    Test that the client can receive a RoomUpdate packet.
-    """
-    async def on_room_update(packet: packets.RoomUpdate):
-        assert isinstance(packet, packets.RoomUpdate)
-        callback_executed.set()
-
-    server_client.client.on_room_update = on_room_update
-
-    await server_client.server_send(test_data["room_update"])
+async def test_on_connected_negative(test_data):
+    await helper_test_callback_negative(
+        test_data,
+        packets.Connected,
+        "on_connected"
+    )
 
 
 @pytest.mark.asyncio
-@callback_test_decorator()
-async def test_on_print_json(test_data, server_client, callback_executed):
-    """
-    Test that the client can receive a PrintJSON packet.
-    """
-    async def on_print_json(packet: packets.PrintJSON):
-        assert isinstance(packet, packets.PrintJSON)
-        callback_executed.set()
+async def test_on_connection_refused(test_data):
+    await helper_test_callback_positive(
+        test_data,
+        packets.ConnectionRefused,
+        "on_connection_refused"
+    )
 
-    server_client.client.on_print_json = on_print_json
 
-    await server_client.server_send(test_data["print_json"])
+@pytest.mark.asyncio
+async def test_on_connection_refused_negative(test_data):
+    await helper_test_callback_negative(
+        test_data,
+        packets.ConnectionRefused,
+        "on_connection_refused"
+    )
+
+
+@pytest.mark.asyncio
+async def test_on_room_update_positive(test_data):
+    await helper_test_callback_positive(
+        test_data,
+        packets.RoomUpdate,
+        "on_room_update"
+    )
+
+
+@pytest.mark.asyncio
+async def test_on_room_update_negative(test_data):
+    await helper_test_callback_negative(
+        test_data,
+        packets.RoomUpdate,
+        "on_room_update"
+    )
+
+
+@pytest.mark.asyncio
+async def test_on_print_json_positive(test_data):
+    await helper_test_callback_positive(
+        test_data,
+        packets.PrintJSON,
+        "on_print_json"
+    )
+
+
+@pytest.mark.asyncio
+async def test_on_print_json_negative(test_data):
+    await helper_test_callback_negative(
+        test_data,
+        packets.PrintJSON,
+        "on_print_json"
+    )
+
+
+@pytest.mark.asyncio
+async def test_on_data_package_positive(test_data):
+    await helper_test_callback_positive(
+        test_data,
+        packets.DataPackage,
+        "on_data_package"
+    )
+
+
+@pytest.mark.asyncio
+async def test_on_data_package_negative(test_data):
+    await helper_test_callback_negative(
+        test_data,
+        packets.DataPackage,
+        "on_data_package"
+    )
