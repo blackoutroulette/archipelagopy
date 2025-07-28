@@ -1,0 +1,21 @@
+{
+  "cmd": "SetReply",
+  "operations": [
+    {
+      "operation": "add",
+      "value": 1,
+      "class": "DataStorageOperation"
+    },
+    {
+      "operation": "mul",
+      "value": 2,
+      "class": "DataStorageOperation"
+    }
+  ],
+  "default": 0,
+  "key": "test_key",
+  "want_reply": true,
+  "original_value": 0,
+  "slot": 1,
+  "value": 2
+}

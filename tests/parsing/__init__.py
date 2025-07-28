@@ -23,8 +23,10 @@ def helper_test_packet_adapter(data: str, packet_cls: type[T]) -> T:
     return packet[0]
 
 def load_data(folder: Path, recursive: bool = False) -> list[tuple[Path, str]]:
+    assert folder.exists(), f"{folder} does not exist"
+
     files = folder.rglob("*.json") if recursive else folder.glob("*.json")
-    assert files, f"No JSON files found in {PATH/folder}"
+    assert files, f"{folder} is empty"
 
     data = [
         (p, p.read_text("utf-8"))
