@@ -1,0 +1,12 @@
+{
+  "cmd": "LocationInfo",
+  "locations": [
+    {
+      "item": 66166,
+      "location": 67011,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    }
+  ]
+}

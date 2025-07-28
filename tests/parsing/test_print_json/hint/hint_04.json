@@ -1,0 +1,57 @@
+{
+  "cmd": "PrintJSON",
+  "data": [
+    {
+      "text": "[Hint]: "
+    },
+    {
+      "text": "1",
+      "type": "player_id"
+    },
+    {
+      "text": "'s "
+    },
+    {
+      "text": "66091",
+      "player": 1,
+      "flags": 1,
+      "type": "item_id"
+    },
+    {
+      "text": " is at "
+    },
+    {
+      "text": "67012",
+      "player": 1,
+      "type": "location_id"
+    },
+    {
+      "text": " in "
+    },
+    {
+      "text": "1",
+      "type": "player_id"
+    },
+    {
+      "text": "'s World"
+    },
+    {
+      "text": ". "
+    },
+    {
+      "text": "(unspecified)",
+      "hint_status": 0,
+      "type": "hint_status"
+    }
+  ],
+  "type": "Hint",
+  "receiving": 1,
+  "item": {
+    "item": 66091,
+    "location": 67012,
+    "player": 1,
+    "flags": 1,
+    "class": "NetworkItem"
+  },
+  "found": false
+}

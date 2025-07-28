@@ -1,0 +1,257 @@
+{
+  "cmd": "LocationInfo",
+  "locations": [
+    {
+      "item": 66072,
+      "location": 68638,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66072,
+      "location": 68639,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66072,
+      "location": 68640,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66177,
+      "location": 68641,
+      "player": 1,
+      "flags": 1,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66077,
+      "location": 68650,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66165,
+      "location": 68651,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66077,
+      "location": 68657,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66074,
+      "location": 68658,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66007,
+      "location": 68659,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66077,
+      "location": 68660,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66072,
+      "location": 68661,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66091,
+      "location": 68662,
+      "player": 1,
+      "flags": 1,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66076,
+      "location": 68663,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66078,
+      "location": 68664,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66103,
+      "location": 68665,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66077,
+      "location": 68666,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66072,
+      "location": 68667,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66002,
+      "location": 68668,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66001,
+      "location": 68669,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66072,
+      "location": 68670,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66157,
+      "location": 68671,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66076,
+      "location": 68672,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66001,
+      "location": 68673,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66072,
+      "location": 68674,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66078,
+      "location": 68675,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66102,
+      "location": 68676,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66072,
+      "location": 68692,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66076,
+      "location": 68693,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66072,
+      "location": 68694,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66077,
+      "location": 68695,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66072,
+      "location": 68696,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66076,
+      "location": 68697,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66077,
+      "location": 68698,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66074,
+      "location": 68699,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66178,
+      "location": 68700,
+      "player": 1,
+      "flags": 1,
+      "class": "NetworkItem"
+    },
+    {
+      "item": 66002,
+      "location": 68701,
+      "player": 1,
+      "flags": 0,
+      "class": "NetworkItem"
+    }
+  ]
+}

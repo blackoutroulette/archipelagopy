@@ -1,0 +1,6 @@
+{
+  "cmd": "InvalidPacket",
+  "type": "cmd",
+  "original_cmd": null,
+  "text": "Could not get command from cmd at `cmd`"
+}

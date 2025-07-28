@@ -1,0 +1,16 @@
+{
+  "cmd": "SetReply",
+  "operations": [
+    {
+      "operation": "replace",
+      "value": 9223372036854775807,
+      "class": "DataStorageOperation"
+    }
+  ],
+  "default": -1,
+  "key": "test_key",
+  "want_reply": true,
+  "original_value": 2,
+  "slot": 1,
+  "value": 9223372036854775807
+}
