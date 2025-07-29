@@ -218,7 +218,7 @@ class Client(CCInterface):
             TimeoutError,
             OSError
         ) as error:
-            await self.on_connect_error(error)
+            self.on_connect_error(error)
         except asyncio.CancelledError:
             pass
         except Exception as error:
