@@ -61,11 +61,6 @@ def _handle_task_exception(task: asyncio.Task):
         _LOGGER.error(exc)
 
 
-def ensure_callback_is_coroutine(callback: Callable[..., Awaitable]):
-    if not inspect.iscoroutinefunction(callback):
-        raise RuntimeError(f"Callback {callback.__name__} must be a coroutine function.")
-
-
 def packet_to_json(packet: packets.ClientPacket) -> str:
     """
     Converts a ClientPacket to a JSON string.
@@ -172,7 +167,6 @@ class Client(CCInterface):
 
         # check if server went into standby mode
         if close_code == websockets.CloseCode.GOING_AWAY:
-            ensure_callback_is_coroutine(self.on_server_shutdown)
             await self.on_server_shutdown()
 
         _LOGGER.debug(
@@ -206,7 +200,6 @@ class Client(CCInterface):
                 _LOGGER.info("[%s]: Connected", self._addr)
 
                 # fire on_ready event
-                ensure_callback_is_coroutine(self.on_ready)
                 await self.on_ready()
 
                 await self._loop_handler()
@@ -238,13 +231,11 @@ class Client(CCInterface):
     async def _process_packet(self, packet: packets.ServerPacket):
 
         # fire on_packet event
-        ensure_callback_is_coroutine(self.on_packet)
         await self.on_packet(packet)
 
         # manage callback
         callback: Callable[..., Awaitable] = self._resolve_packet_callback(packet)
         if callback is not None:
-            ensure_callback_is_coroutine(callback)
             await callback(packet)
 
     async def _task_wrapper(self, func: Callable[..., Awaitable]) -> None:
@@ -266,7 +257,6 @@ class Client(CCInterface):
         async for js in self._socket:
 
             # fire on_received event
-            ensure_callback_is_coroutine(self.on_received)
             await self.on_received(js)
 
             packet_list: list[packets.ServerPacket] = packets.PACKET_TYPE_ADAPTER.validate_json(js)
@@ -291,3 +281,33 @@ class Client(CCInterface):
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.stop()
+
+    def _monkey_patch_handler(self, key: str, value: object):
+        """
+        Assert that monkey patched callbacks are of the same signature as the original ones, e.g.
+        coroutine functions must be patched with coroutine functions, and regular functions with regular functions.
+        """
+
+        if not hasattr(self, key):
+            return
+
+        obj: object = getattr(self, key)
+        if not callable(obj):
+            return
+
+        if not callable(value):
+            _LOGGER.warning("Monkey patching callable %s with non-callable %s", key, value)
+
+        func_is_co: bool = inspect.iscoroutinefunction(obj)
+        patch_is_co: bool = inspect.iscoroutinefunction(value)
+
+        if func_is_co and not patch_is_co:
+            raise TypeError(f"Cannot monkey patch coroutine function {key} with non-coroutine function.")
+
+        if not func_is_co and patch_is_co:
+            raise TypeError(f"Cannot monkey patch non-coroutine function {key} with coroutine function.")
+
+    def __setattr__(self, key: str, value: object):
+        self._monkey_patch_handler(key, value)
+        super().__setattr__(key, value)
+
