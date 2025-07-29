@@ -1,5 +1,6 @@
 import asyncio
 from pathlib import Path
+from types import MappingProxyType
 
 import pytest
 import websockets
@@ -68,9 +69,9 @@ class ServerClient:
 
 
 @pytest.fixture(scope="module")
-def test_data():
+def test_data() -> MappingProxyType[str, str]:
     data_path = (Path(__file__).parent / "test_callbacks.txt")
-    data = dict([l.split(':', 1) for l in data_path.read_text("utf-8").splitlines()])
+    data = MappingProxyType(dict([l.split(':', 1) for l in data_path.read_text("utf-8").splitlines()]))
     assert data
 
     return data
