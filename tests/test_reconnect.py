@@ -9,8 +9,7 @@ from archipelago_py.client import Client
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("close_code", [cd for cd in websockets.CloseCode], ids=lambda cd: cd.name)
-async def test_reconnect_close_codes(close_code: websockets.CloseCode):
+async def test_reconnect_on_server_standby():
     """
     Test that the client reconnects to the server when the connection is closed.
     The test will use different close codes to ensure that the client can handle various closure scenarios.
@@ -30,13 +29,13 @@ async def test_reconnect_close_codes(close_code: websockets.CloseCode):
         if times_connected >= 2:
             stop_event.set()
 
-        await ws.close(code=close_code)
+        await ws.close(code=websockets.CloseCode.GOING_AWAY)
 
     async def run_server():
         async with serve(server_task_handler, "localhost", 0) as server:
             port: int = next(iter(server.sockets)).getsockname()[1]  # Get the port assigned by the OS
 
-            async with Client(port, host="localhost", secure=False) as client:
+            async with Client(port, host="localhost", secure=False, auto_reconnect=True) as client:
                 await stop_event.wait()
 
         assert client._get_reconnect_frequency() == 2

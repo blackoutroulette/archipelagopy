@@ -27,6 +27,14 @@ class ClientCallbackInterface:
         Called when an error occurs during the connection to the server
         """
 
+    def on_connection_closed(self, close_code: websockets.CloseCode, last_sent_packet: str | None = None):
+        """
+        Called when the connection is closed by the server.
+        websockets.CloseCode.NORMAL_CLOSURE usually indicates that a sent packet is malformed causing
+        the server to close the connection because of an internal exception being thrown.
+        The exact cause can only be checked inside the server console on the lobby webpage if you are the creator of the lobby.
+        """
+
     async def on_server_shutdown(self):
         """
         Called when the server is shutting down due lobby inactivity and closes the connection.

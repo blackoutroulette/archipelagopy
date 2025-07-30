@@ -69,16 +69,22 @@ def packet_to_json(packet: packets.ClientPacket) -> str:
     json_data: str = f"[{packet.model_dump_json(by_alias=True)}]"
     return json_data
 
+class ConnectionClosedError(BaseException):
+    def __init__(self, close_code: websockets.CloseCode):
+        self.close_code = close_code
+
 
 class Client(CCInterface):
 
     RECONNECT_ACCUMULATION_PERIOD: float = 60  # seconds
 
-    def __init__(self, port: int, host: str = "archipelago.gg", ssl_context: SSLContext | None = None, secure: bool = True):
+    def __init__(self, port: int, host: str = "archipelago.gg", ssl_context: SSLContext | None = None, secure: bool = True, auto_reconnect: bool = False):
         super().__init__()
         self._addr: str = f"wss://{host}:{port}" if secure else f"ws://{host}:{port}"
         self._secure: bool = secure
         self._ssl_context = ssl.create_default_context() if ssl_context is None else ssl_context
+        self._auto_reconnect: bool = auto_reconnect
+
         self._socket: ClientConnection | None = None
         self._task: asyncio.Task | None = None
         self._send_lock = asyncio.Lock()
@@ -89,6 +95,9 @@ class Client(CCInterface):
 
         # keep track of server connection close events
         self._reconnect_timestamps: list[float] = []
+
+        # last sent packet, used for when the server closes the connection unexpectedly
+        self._last_sent_packet: str | None = None
 
     async def start(self):
         self._task = asyncio.create_task(self._connect_wrapper())
@@ -190,39 +199,62 @@ class Client(CCInterface):
 
     async def _connect(self):
         ws: ClientConnection
-        while True:
+        async with self._create_websocket_connection() as ws:
 
-            async with self._create_websocket_connection() as ws:
+            self._socket = ws
+            self._increase_reconnects()
 
-                self._socket = ws
-                self._increase_reconnects()
+            _LOGGER.info("[%s]: Connected", self._addr)
 
-                _LOGGER.info("[%s]: Connected", self._addr)
+            # fire on_ready event
+            await self.on_ready()
 
-                # fire on_ready event
-                await self.on_ready()
+            await self._loop_handler()
 
-                await self._loop_handler()
-                # if we are here, the connection was closed by the server
-                await self._handle_connection_closed()
+            # if we are here, the connection was closed by the server
+            raise ConnectionClosedError(websockets.CloseCode(ws.close_code))
 
+    async def _handle_reconnect_backoff(self):
+        self._increase_reconnects()
+        backoff: int = self._exponential_backoff(
+            self._get_reconnect_frequency()
+        )
+        _LOGGER.info("[%s]: Connect call failed, retrying in %s", self._addr, backoff)
+        await asyncio.sleep(backoff)
 
     async def _connect_wrapper(self):
-        try:
-            await self._connect()
-        except (
-            websockets.exceptions.InvalidURI,
-            websockets.exceptions.InvalidHandshake,
-            websockets.exceptions.InvalidProxy,
-            ConnectionRefusedError,
-            TimeoutError,
-            OSError
-        ) as error:
-            self.on_connect_error(error)
-        except asyncio.CancelledError:
-            pass
-        except Exception as error:
-            _LOGGER.error("[%s]: %s", self._addr, error)
+        while True:
+            try:
+                await self._connect()
+            except ConnectionRefusedError as error:
+                if self._auto_reconnect:
+                    await self._handle_reconnect_backoff()
+                    continue
+                else:
+                    self.on_connect_error(error)
+            except ConnectionClosedError as error:
+                if error.close_code == websockets.CloseCode.GOING_AWAY:
+                    _LOGGER.info("[%s]: ConnectionClosed: Lobby went into standby", self._addr)
+                    await self.on_server_shutdown()
+                    if self._auto_reconnect:
+                        continue
+                else:
+                    _LOGGER.info("[%s]: ConnectionClosed: %s(%s)", self._addr, error.close_code.name, error.close_code.value)
+                    self.on_connection_closed(error.close_code, self._last_sent_packet)
+            except (
+                websockets.exceptions.InvalidURI,
+                websockets.exceptions.InvalidHandshake,
+                websockets.exceptions.InvalidProxy,
+                TimeoutError,
+                OSError
+            ) as error:
+                self.on_connect_error(error)
+            except asyncio.CancelledError:
+                pass
+            except Exception as error:
+                _LOGGER.error("[%s]: %s", self._addr, error)
+
+            break
 
         _LOGGER.debug("[%s]: connect loop stopped", self._addr)
         # signal that the client has stopped
@@ -273,6 +305,7 @@ class Client(CCInterface):
     async def _send_loop(self):
         while True:
             message: str = await self._send_queue.get()
+            self._last_sent_packet = message
             await self._socket.send(message, text=True)
 
     async def __aenter__(self):
