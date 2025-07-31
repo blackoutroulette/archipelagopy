@@ -11,8 +11,7 @@ from archipelago_py.client import Client
 @pytest.mark.asyncio
 async def test_reconnect_on_server_standby():
     """
-    Test that the client reconnects to the server when the connection is closed.
-    The test will use different close codes to ensure that the client can handle various closure scenarios.
+    Test that the client tries to reconnect after the server goes into standby and auto_reconnect is enabled.
     """
 
     times_connected: int = 0
@@ -46,3 +45,32 @@ async def test_reconnect_on_server_standby():
     assert stop_event.is_set()
 
 
+@pytest.mark.asyncio
+async def test_reconnect_on_connection_refused():
+    """
+    Test that the client tries to reconnect after a connection refused error and auto_reconnect is enabled.
+    """
+
+    times_connected: int = 0
+    stop_event = asyncio.Event()
+
+    client = Client(0, secure=False, auto_reconnect=True)
+    client.RECONNECT_ACCUMULATION_PERIOD = math.inf  # Ignore the accumulation period for this test
+    client._exponential_backoff = staticmethod(lambda x: 0)  # Disable exponential backoff for this test
+
+    async def connect_monkey_patch(*args, **kwargs):
+        nonlocal times_connected, stop_event
+
+        times_connected += 1
+        if times_connected >= 2:
+            stop_event.set()
+
+        raise ConnectionRefusedError()
+
+    client._connect = connect_monkey_patch
+
+    async with client:
+        await asyncio.wait_for(stop_event.wait(), timeout=1)
+
+    assert times_connected == 2
+    assert stop_event.is_set()

@@ -4,6 +4,7 @@ import pytest
 import websockets
 
 from archipelago_py import packets, Client
+from archipelago_py.client import ConnectionClosedError
 from tests.callbacks import ServerClient, test_data
 
 
@@ -87,3 +88,27 @@ async def test_on_connect_error(exception: type[Exception]):
     async with client:
         await asyncio.wait_for(callback_executed.wait(), timeout=1)
 
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("close_code", websockets.CloseCode, ids=lambda cd: cd.name)
+async def test_on_connection_closed(close_code: websockets.CloseCode):
+
+    client = Client(0, auto_reconnect=False)
+    callback_executed = asyncio.Event()
+    exception = ConnectionClosedError(close_code)
+
+    async def connect_monkey_patch(*args, **kwargs):
+        nonlocal exception
+        raise exception
+
+    client._connect = connect_monkey_patch
+
+    def on_connection_closed(close_code_):
+        nonlocal close_code
+        assert close_code_ == close_code
+        callback_executed.set()
+
+    client.on_connection_closed = on_connection_closed
+
+    async with client:
+        await asyncio.wait_for(callback_executed.wait(), timeout=1)

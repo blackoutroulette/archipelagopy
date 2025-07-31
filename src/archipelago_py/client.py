@@ -25,7 +25,7 @@ PacketCallbackMapType = Final[
 ]
 
 # Maps packets.ServerPacket types to their respective callback functions.
-# The lambda (resolve function) is needed to make dynamic function overrides work.
+# The lambda (resolve function) is needed to make dynamic function overrides (monkey patching) work.
 PACKET_CALLBACK_MAP: PacketCallbackMapType = MappingProxyType({
     packets.Bounced: lambda x: cast(CCInterface, x).on_bounced,
     packets.Connected: lambda x: cast(CCInterface, x).on_connected,
@@ -76,9 +76,20 @@ class ConnectionClosedError(BaseException):
 
 class Client(CCInterface):
 
+    # Accumulation period for reconnect attempts. Reconnect attempts which are older than this period will be ignored.
     RECONNECT_ACCUMULATION_PERIOD: float = 60  # seconds
 
     def __init__(self, port: int, host: str = "archipelago.gg", ssl_context: SSLContext | None = None, secure: bool = True, auto_reconnect: bool = False):
+        """
+        :param port: The port to connect to.
+        :param host: The host to connect to. Defaults to "archipelago.gg".
+        :param ssl_context: An optional SSLContext to use for secure connections.
+        :param secure: Whether to use a secure connection (wss://) or not (ws://).
+        :param auto_reconnect: Whether to automatically trying to reconnect.
+         This only applies to when the server is going into standby or
+         the server is already in standby during the connecting phase.
+        """
+
         super().__init__()
         self._addr: str = f"wss://{host}:{port}" if secure else f"ws://{host}:{port}"
         self._secure: bool = secure
@@ -95,9 +106,6 @@ class Client(CCInterface):
 
         # keep track of server connection close events
         self._reconnect_timestamps: list[float] = []
-
-        # last sent packet, used for when the server closes the connection unexpectedly
-        self._last_sent_packet: str | None = None
 
     async def start(self):
         self._task = asyncio.create_task(self._connect_wrapper())
@@ -169,27 +177,6 @@ class Client(CCInterface):
     async def wait_closed(self) -> None:
         await self._stop_event.wait()
 
-    async def _handle_connection_closed(self):
-
-        # get the close code from the socket
-        close_code = websockets.CloseCode(self._socket.close_code)
-
-        # check if server went into standby mode
-        if close_code == websockets.CloseCode.GOING_AWAY:
-            await self.on_server_shutdown()
-
-        _LOGGER.debug(
-            "[%s]: ConnectionClosed: %s(%s)",
-            self._addr, close_code.name, close_code
-        )
-
-        reconnect_frequency: int = self._get_reconnect_frequency()
-
-        # wait with exponential backoff before trying to reconnect
-        await asyncio.sleep(
-            self._exponential_backoff(reconnect_frequency)
-        )
-
     def _create_websocket_connection(self) -> websockets.connect:
         if self._secure:
             return websockets.connect(self._addr, ssl=self._ssl_context)
@@ -227,20 +214,19 @@ class Client(CCInterface):
             try:
                 await self._connect()
             except ConnectionRefusedError as error:
+                self.on_connect_error(error)
+
                 if self._auto_reconnect:
                     await self._handle_reconnect_backoff()
                     continue
-                else:
-                    self.on_connect_error(error)
+
             except ConnectionClosedError as error:
-                if error.close_code == websockets.CloseCode.GOING_AWAY:
-                    _LOGGER.info("[%s]: ConnectionClosed: Lobby went into standby", self._addr)
-                    await self.on_server_shutdown()
-                    if self._auto_reconnect:
-                        continue
-                else:
-                    _LOGGER.info("[%s]: ConnectionClosed: %s(%s)", self._addr, error.close_code.name, error.close_code.value)
-                    self.on_connection_closed(error.close_code, self._last_sent_packet)
+                close_code = error.close_code
+                _LOGGER.info("[%s]: ConnectionClosed: %s(%s)",self._addr, close_code.name, close_code.value)
+                self.on_connection_closed(close_code)
+                if error.close_code == websockets.CloseCode.GOING_AWAY and self._auto_reconnect:
+                    continue
+
             except (
                 websockets.exceptions.InvalidURI,
                 websockets.exceptions.InvalidHandshake,
@@ -285,7 +271,6 @@ class Client(CCInterface):
 
     async def _receive_loop(self):
         js: str
-        # loop will silently break if the connection is closed and will not raise an exception
         async for js in self._socket:
 
             # fire on_received event
@@ -305,7 +290,6 @@ class Client(CCInterface):
     async def _send_loop(self):
         while True:
             message: str = await self._send_queue.get()
-            self._last_sent_packet = message
             await self._socket.send(message, text=True)
 
     async def __aenter__(self):
