@@ -24,13 +24,15 @@ A simple example of how to connect to an Archipelago server and send a connect p
 import asyncio
 from archipelago_py import Client, packets, structs, enums
 
-async def on_packet_handler(packet: packets.ServerPacket):
-    print(f"Received packet: {packet}")
+async def on_print_json(packet: packets.PrintJSON):
+    for msg in packet.data:
+        if msg.text is not None:
+            print(f">> {msg.text}")
 
 async def main():
     client = Client(port=12345)
     # override the default packet handler to print received packets
-    client.on_packet = on_packet_handler
+    client.on_print_json = on_print_json
 
     # connect to the server
     await client.start()
@@ -39,10 +41,9 @@ async def main():
     await client.send(
         packets.Connect(
             version=structs.Version(major=6, minor=0, build=0),
-            tags=("AP",),
-            name="Link",
-            game="Ocarina of Time",
-            items_handling=enums.ItemHandlingFlag.OWN_WORLD | enums.ItemHandlingFlag.OTHER_WORLDS,
+            tags=["AP"],
+            name="Link", # slot name
+            game="Ocarina of Time"
         )
     )
 
@@ -54,6 +55,11 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+```
+Output:
+```
+>> Link (Team #1) playing Ocarina of Time has joined. Client(6.0.0), ['AP'].
+>> Now that you are connected, you can use !help to list commands to run via the server. If your client supports it, you may have additional local commands you can list with /help.
 ```
 
 A more advanced example can be found in the `examples` directory of the repository, which demonstrates how to handle different packet types.
@@ -86,8 +92,11 @@ class MyClient(Client):
 # Further Documentation
 For further documentation please refer to the [Archipelago Network Protocol](https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/network%20protocol.md)
 
+# Contributing
+Contributions are welcome! Please open an issue about your changes prior to writing a pull request. In the issue please mention if it is a bug fix or feature request.
+
 # License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-# Contributing
-Contributions are welcome! Please open an issue about your changes prior to writing a pull request. In the issue please mention if it is a bug fix or feature request.
+# Credits
+Documentation is partly or fully taken from the [Archipelago Network Protocol](https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/network%20protocol.md)
