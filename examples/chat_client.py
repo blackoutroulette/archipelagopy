@@ -3,6 +3,7 @@ import asyncio
 import aioconsole
 
 from archipelago_py import Client, packets, structs, enums
+from archipelago_py.callback_interface import OnConnectExceptionUnion
 from archipelago_py.structs import NetworkSlot
 
 
@@ -23,6 +24,9 @@ class ChatClient(Client):
                 slot_data=True
             )
         )
+
+    def on_connect_error(self, error: OnConnectExceptionUnion):
+        print("Failed to connect:", error)
 
     async def on_connection_refused(self, packet: packets.ConnectionRefused):
         print(f"Connection refused: {",".join(packet.errors)}")
