@@ -5,7 +5,7 @@ async def on_packet_handler(packet: packets.ServerPacket):
     print(f"Received packet: {packet}")
 
 async def main():
-    client = Client(port=62805)
+    client = Client(port=12345)
     # override the default packet handler to print received packets
     client.on_packet = on_packet_handler
 
@@ -16,8 +16,8 @@ async def main():
     await client.send(
         packets.Connect(
             version=structs.Version(major=6, minor=0, build=0),
-            tags=("AP",),
-            name="Link",
+            tags=["AP"],
+            name="Link", # slot name
             game="Ocarina of Time",
             items_handling=enums.ItemHandlingFlag.OWN_WORLD | enums.ItemHandlingFlag.OTHER_WORLDS,
         )
