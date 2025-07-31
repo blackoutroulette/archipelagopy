@@ -15,6 +15,7 @@ class RoomInfo(ServerPacket):
     :ivar permissions: Mapping of permission name to Permission, keys are: "release", "collect" and "remaining".
     :ivar datapackage_checksums: Checksum hash of the individual games' data packages the server will send.
      Used by newer clients to decide which games' caches are outdated. See Data Package Contents for more information.
+     Keys are game names, values are the checksums.
     :ivar tags: Denotes special features or capabilities that the sender is capable of. Example: WebHost
     :ivar games: List of games in the multiworld.
     :ivar seed_name: Uniquely identifying name of this generation.

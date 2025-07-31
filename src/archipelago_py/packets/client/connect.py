@@ -26,9 +26,9 @@ class Connect(ClientPacket):
 
     cmd: Literal["Connect"] = "Connect"
     version: Version
-    tags: list[str]
     name: str
-    items_handling: ItemHandlingFlag
+    tags: list[str] = []
+    items_handling: ItemHandlingFlag = ItemHandlingFlag.NONE
     game: str | None = None
     slot_data: bool = False
     password: str = ""
