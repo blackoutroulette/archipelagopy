@@ -1,10 +1,10 @@
-from typing import Annotated, Final
+from typing import Annotated, Final, Union
 
 from pydantic import TypeAdapter, Field
 
 from archipelago_py import packets
 
-ServerPacketUnionType = (
+ServerPacketUnionType: Union = (
         packets.Bounced |
         packets.Connected |
         packets.ConnectionRefused |
@@ -19,6 +19,24 @@ ServerPacketUnionType = (
         packets.SetReply
 )
 
+ClientPacketUnionType: Union = (
+        packets.Bounce |
+        packets.Connect |
+        packets.ConnectUpdate |
+        packets.Get |
+        packets.GetDataPackage |
+        packets.LocationChecks |
+        packets.LocationScouts |
+        packets.Say |
+        packets.Set |
+        packets.SetNotify |
+        packets.StatusUpdate |
+        packets.Sync |
+        packets.UpdateHint
+)
+
+PacketUnionType: Union = ServerPacketUnionType | ClientPacketUnionType
+
 PACKET_TYPE_ADAPTER: Final[TypeAdapter] = TypeAdapter(
-    list[Annotated[ServerPacketUnionType, Field(discriminator="cmd")]]
+    list[Annotated[PacketUnionType, Field(discriminator="cmd")]]
 )

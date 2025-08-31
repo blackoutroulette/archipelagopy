@@ -16,4 +16,4 @@ class LocationChecks(ClientPacket):
     """
 
     cmd: Literal["LocationChecks"] = "LocationChecks"
-    locations: list[str]
+    locations: list[int]

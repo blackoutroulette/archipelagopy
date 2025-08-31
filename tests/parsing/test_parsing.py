@@ -7,17 +7,23 @@ from archipelago_py import packets
 from tests.parsing import load_data, helper_test_packet_adapter, helper_test_parse_json
 
 TEST_DATA: Final[list[tuple[type[packets.Packet], str]]] = [
-    (packets.Bounced, "test_bounced"),
-    (packets.Connected, "test_connected"),
-    (packets.ConnectionRefused, "test_connection_refused"),
-    (packets.DataPackage, "test_data_package"),
-    (packets.InvalidPacket, "test_invalid_packet"),
-    (packets.LocationInfo, "test_location_info"),
-    (packets.ReceivedItems, "test_received_items"),
-    (packets.Retrieved, "test_retrieved"),
-    (packets.RoomInfo, "test_room_info"),
-    (packets.RoomUpdate, "test_room_update"),
-    (packets.SetReply, "test_set_reply"),
+    (packets.Bounced, "server/test_bounced"),
+    (packets.Connected, "server/test_connected"),
+    (packets.ConnectionRefused, "server/test_connection_refused"),
+    (packets.DataPackage, "server/test_data_package"),
+    (packets.InvalidPacket, "server/test_invalid_packet"),
+    (packets.LocationInfo, "server/test_location_info"),
+    (packets.ReceivedItems, "server/test_received_items"),
+    (packets.Retrieved, "server/test_retrieved"),
+    (packets.RoomInfo, "server/test_room_info"),
+    (packets.RoomUpdate, "server/test_room_update"),
+    (packets.SetReply, "server/test_set_reply"),
+    (packets.Bounce, "client/test_bounce"),
+    (packets.Get, "client/test_get"),
+    (packets.LocationChecks, "client/test_location_checks"),
+    (packets.SetNotify, "client/test_set_notify"),
+    (packets.Say, "client/test_say"),
+    (packets.StatusUpdate, "client/test_status_update")
 ]
 
 FLAT_TEST_DATA: Final[list[tuple[type[packets.Packet], tuple[Path, str]]]] = [

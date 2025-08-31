@@ -20,7 +20,7 @@ class Bounce(ClientPacket):
     """
 
     cmd: Literal["Bounce"] = "Bounce"
-    games: list[str]
-    tags: list[str]
     slots: list[int]
-    data: dict
+    games: list[str] | None = None
+    tags: list[str] | None = None
+    data: dict | None = None

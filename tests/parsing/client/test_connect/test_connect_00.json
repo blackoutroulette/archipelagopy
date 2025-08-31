@@ -1,0 +1,18 @@
+{
+  "cmd": "Connect",
+  "password": null,
+  "name": "Player1",
+  "version": {
+    "major": 0,
+    "minor": 6,
+    "build": 3,
+    "class": "Version"
+  },
+  "tags": [
+    "AP"
+  ],
+  "items_handling": 7,
+  "uuid": "0c396068-55cd-46a8-9576-c22cedb09174",
+  "game": "Starcraft 2",
+  "slot_data": true
+}
