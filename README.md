@@ -1,6 +1,6 @@
-# ArchipelagoPy
-ArchipelagoPy is a Python library which implements the Archipelago Network Protocol by parsing all network data into Python classes using Pydantic and Asyncio.
-ArchipelagoPy aims to provide an easy to use, bare minimum implementation and type safety regarding the Archipelago protocol,
+# archipelagopy - An API wrapper for Archipelago written in Python
+archipelagopy is an API wrapper for Archipelago written in Python using Pydantic and Asyncio.
+archipelagopy aims to provide an easy to use, bare minimum implementation and type safety regarding the Archipelago protocol,
 allowing developers to create their own clients or servers for the Archipelago network.
 
 # Features
@@ -11,11 +11,11 @@ allowing developers to create their own clients or servers for the Archipelago n
 
 # How to install
 
-ArchipelagoPy can easily be installed using pip:
+archipelagopy can easily be installed using pip:
 ```bash
-pip install git+https://github.com/blackoutroulette/ArchipelagoPy.git
+pip install git+https://github.com/blackoutroulette/archipelagopy.git
 ```
-A Python version of 3.10 or higher is required to run ArchipelagoPy.
+A Python version of 3.10 or higher is required to run archipelagopy.
 
 # How to use
 
