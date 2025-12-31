@@ -12,7 +12,7 @@ description = "A network client library for the Archipelago Randomizer"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "websockets>=10.4",
+    "websockets>=15.0",
     "pydantic>=2.11.7"
 ]
 
