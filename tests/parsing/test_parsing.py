@@ -3,7 +3,7 @@ from typing import Final
 
 import pytest
 
-from archipelago_py import packets
+from archipelagopy import packets
 from tests.parsing import load_data, helper_test_packet_adapter, helper_test_parse_json
 
 TEST_DATA: Final[list[tuple[type[packets.Packet], str]]] = [

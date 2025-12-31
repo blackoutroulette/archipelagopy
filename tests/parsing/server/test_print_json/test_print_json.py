@@ -3,8 +3,8 @@ from typing import Final
 
 import pytest
 
-from archipelago_py import packets
-from archipelago_py.enums import PrintJSONType
+from archipelagopy import packets
+from archipelagopy.enums import PrintJSONType
 from tests.parsing import load_data, helper_test_packet_adapter, helper_test_parse_json
 
 TEST_DATA: Final[list[tuple[PrintJSONType | None, str]]] = [

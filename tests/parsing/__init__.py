@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import TypeVar
 
-from archipelago_py import packets
+from archipelagopy import packets
 
 PATH = Path(__file__).parent
 

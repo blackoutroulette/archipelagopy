@@ -3,7 +3,7 @@ from typing import Coroutine, Callable
 
 import pytest
 
-from archipelago_py import Client, ClientCallbackInterface
+from archipelagopy import Client, ClientCallbackInterface
 
 def get_coroutine_callbacks() -> list[tuple[str, Coroutine]]:
     return [

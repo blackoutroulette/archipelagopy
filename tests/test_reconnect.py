@@ -5,7 +5,7 @@ import pytest
 import websockets
 from websockets import ServerConnection, serve
 
-from archipelago_py.client import Client
+from archipelagopy.client import Client
 
 
 @pytest.mark.asyncio

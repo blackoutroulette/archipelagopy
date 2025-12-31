@@ -1,11 +1,11 @@
 import asyncio
 from asyncio import Server
 
-from archipelago_py import packets
-from archipelago_py.callback_interface import OnConnectExceptionUnion
-from archipelago_py.client import Client
-from archipelago_py.enums.item_handling_flag import ItemHandlingFlag
-from archipelago_py.packets import Connect
+from archipelagopy import packets
+from archipelagopy.callback_interface import OnConnectExceptionUnion
+from archipelagopy.client import Client
+from archipelagopy.enums.item_handling_flag import ItemHandlingFlag
+from archipelagopy.packets import Connect
 
 class AdvancedClient(Client):
 

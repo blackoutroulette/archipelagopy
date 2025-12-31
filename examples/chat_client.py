@@ -2,9 +2,9 @@ import asyncio
 
 import aioconsole
 
-from archipelago_py import Client, packets, structs, enums
-from archipelago_py.callback_interface import OnConnectExceptionUnion
-from archipelago_py.structs import NetworkSlot
+from archipelagopy import Client, packets, structs, enums
+from archipelagopy.callback_interface import OnConnectExceptionUnion
+from archipelagopy.structs import NetworkSlot
 
 
 class ChatClient(Client):

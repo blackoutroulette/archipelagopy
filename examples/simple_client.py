@@ -1,5 +1,5 @@
 import asyncio
-from archipelago_py import Client, packets, structs, enums
+from archipelagopy import Client, packets, structs, enums
 
 async def on_print_json(packet: packets.PrintJSON):
     for msg in packet.data:

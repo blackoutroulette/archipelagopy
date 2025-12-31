@@ -2,9 +2,9 @@ import asyncio
 
 import websockets
 
-from archipelago_py import Client, enums, packets, structs
-from archipelago_py.callback_interface import OnConnectExceptionUnion
-from archipelago_py.structs import NetworkSlot, NetworkItem, GameData
+from archipelagopy import Client, enums, packets, structs
+from archipelagopy.callback_interface import OnConnectExceptionUnion
+from archipelagopy.structs import NetworkSlot, NetworkItem, GameData
 
 
 class ItemAnnouncerClient(Client):

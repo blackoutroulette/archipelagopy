@@ -6,7 +6,7 @@ import pytest
 import websockets
 from websockets import ServerConnection
 
-from archipelago_py import Client, packets
+from archipelagopy import Client, packets
 
 
 class ServerClient:

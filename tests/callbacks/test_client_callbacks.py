@@ -3,8 +3,8 @@ import asyncio
 import pytest
 import websockets
 
-from archipelago_py import packets, Client
-from archipelago_py.client import ConnectionClosedError
+from archipelagopy import packets, Client
+from archipelagopy.client import ConnectionClosedError
 from tests.callbacks import ServerClient, test_data
 
 

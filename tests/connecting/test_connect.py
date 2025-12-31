@@ -6,7 +6,7 @@ import pytest
 import websockets
 from websockets import ServerConnection
 
-from archipelago_py import Client, packets, enums
+from archipelagopy import Client, packets, enums
 
 
 @pytest.mark.asyncio
@@ -16,7 +16,8 @@ async def test_connect():
 
     # load the test data
     test_data_path = (Path(__file__).parent/"test_connect.txt")
-    test_data = dict([l.split(':', 1) for l in test_data_path.read_text("utf-8").splitlines()])
+    lines = test_data_path.read_text("utf-8").splitlines()
+    test_data = dict([line.split(':', 1) for line in lines])
     assert test_data
 
     # flags
@@ -30,7 +31,7 @@ async def test_connect():
         await ws.send(test_data["room_info"])
 
         msg = await ws.recv()
-        assert msg == test_data["connect"]
+        assert json.loads(msg) == json.loads(test_data["connect"])
 
         await ws.send(test_data["connected"])
         await ws.send(test_data["join"])
@@ -45,7 +46,7 @@ async def test_connect():
 
         conn = packets.Connect(
             version=packet.version,
-            tags=("AP",),
+            tags=["AP"],
             name="Player1",  # Slot name
             game="Game_One",  # Game name
             password="123456",

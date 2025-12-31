@@ -20,14 +20,17 @@ A Python version of 3.10 or higher is required to run archipelagopy.
 # How to use
 
 A simple example of how to connect to an Archipelago server and send a connect packet to authenticate:
+
 ```python
 import asyncio
-from archipelago_py import Client, packets, structs, enums
+from archipelagopy import Client, packets, structs, enums
+
 
 async def on_print_json(packet: packets.PrintJSON):
     for msg in packet.data:
         if msg.text is not None:
             print(f">> {msg.text}")
+
 
 async def main():
     client = Client(port=12345)
@@ -42,7 +45,7 @@ async def main():
         packets.Connect(
             version=structs.Version(major=6, minor=0, build=0),
             tags=["AP"],
-            name="Link", # slot name
+            name="Link",  # slot name
             game="Ocarina of Time"
         )
     )
@@ -52,6 +55,7 @@ async def main():
 
     # stop the client
     await client.stop()
+
 
 if __name__ == "__main__":
     asyncio.run(main())
@@ -69,19 +73,24 @@ Callbacks are used to handle events in the Archipelago client. The `Client` clas
 For a complete list of available callback functions, refer to the `ClientCallbackInterface` class.
 
 Callbacks can be dynamically overridden (monkey patched) like this:
+
 ```python
-from archipelago_py import Client
+from archipelagopy import Client
+
 
 async def on_ready():
     print("Connected to the server")
+
 
 client = Client(port=12345)
 client.on_ready = on_ready
 ```
 
 A more clean approach is to subclass the `Client` class and override the methods:
+
 ```python
-from archipelago_py import Client, packets
+from archipelagopy import Client, packets
+
 
 class MyClient(Client):
     async def on_connected(self, packet: packets.Connected):

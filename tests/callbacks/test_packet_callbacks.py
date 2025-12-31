@@ -1,6 +1,6 @@
 import pytest
 
-from archipelago_py import packets
+from archipelagopy import packets
 from tests.callbacks import helper_test_callback_positive, helper_test_callback_negative, test_data
 
 PACKET_CALLBACKS: list[tuple[type[packets.ServerPacket], str]] = [
