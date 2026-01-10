@@ -81,7 +81,7 @@ async def test_connect():
             port: int = next(iter(server.sockets)).getsockname()[1]  # Get the port assigned by the OS
 
             # monkey patch
-            client._addr = f"ws://localhost:{port}"
+            setattr(client, f"_{client.__class__.__name__}__addr", f"ws://localhost:{port}")
             client.on_room_info = on_room_info
             client.on_connected = on_connected
             client.on_print_json = on_print_json

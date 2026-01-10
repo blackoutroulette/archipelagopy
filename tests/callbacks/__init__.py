@@ -47,7 +47,7 @@ class ServerClient:
         async with websockets.serve(self.server_task_handler, "localhost", 0) as server:
             port: int = next(iter(server.sockets)).getsockname()[1]  # Get the port assigned by the OS
 
-            self.client._addr = f"ws://localhost:{port}"
+            setattr(self.client, f"_{self.client.__class__.__name__}__addr", f"ws://localhost:{port}")
             async with self.client:
                 await self.stop_event.wait()
 
