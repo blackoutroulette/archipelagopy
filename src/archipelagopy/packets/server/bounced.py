@@ -23,6 +23,6 @@ class Bounced(ServerPacket):
 
     cmd: Literal["Bounced"] = "Bounced"
     slots: tuple[int, ...]
-    data: dict | None = None
+    data: dict | list | None = None # offical doc says dict but some randomizers send also a list
     games: tuple[str, ...] | None = None
     tags: tuple[ClientTag | str, ...] | None = None
