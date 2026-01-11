@@ -284,8 +284,8 @@ class Client(CCInterface):
 
             await self._loop_handler()
 
-            # if we are here, the connection was closed by the server
-            raise ConnectionClosedError(websockets.CloseCode(ws.close_code))
+            if ws.close_code is not None:
+                raise ConnectionClosedError(websockets.CloseCode(ws.close_code))
 
     async def _handle_reconnect_backoff(self):
         self._increase_reconnects()
