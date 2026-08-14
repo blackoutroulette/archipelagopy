@@ -64,6 +64,7 @@ async def test_reconnect_on_connection_refused():
         times_connected += 1
         if times_connected >= 2:
             stop_event.set()
+            await asyncio.Event().wait()  # block until cancelled
 
         raise ConnectionRefusedError()
 

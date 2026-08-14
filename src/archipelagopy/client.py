@@ -168,6 +168,7 @@ class Client(CCInterface):
                 self._stop(),
                 name=f"{__name__}.stop_task[{self.__addr}]"
             )
+            await self.__stop_task
 
     @staticmethod
     def _exponential_backoff(attempt: int, max_wait: int = 60) -> int:
@@ -300,43 +301,43 @@ class Client(CCInterface):
         await asyncio.sleep(backoff)
 
     async def _connect_wrapper(self):
-        while True:
-            try:
-                await self._connect()
-            except ConnectionRefusedError as error:
-                self.on_connect_error(error)
+        try:
+            while True:
+                try:
+                    await self._connect()
+                except ConnectionRefusedError as error:
+                    self.on_connect_error(error)
 
-                if self.__auto_reconnect:
-                    await self._handle_reconnect_backoff()
-                    continue
+                    if self.__auto_reconnect:
+                        await self._handle_reconnect_backoff()
+                        continue
 
-            except ConnectionClosedError as error:
-                close_code = error.close_code
-                _LOGGER.info("[%s]: ConnectionClosed: %s(%s)", self.__addr, close_code.name, close_code.value)
-                self.on_connection_closed(close_code)
-                if error.close_code == websockets.CloseCode.GOING_AWAY and self.__auto_reconnect:
-                    continue
+                except ConnectionClosedError as error:
+                    close_code = error.close_code
+                    _LOGGER.info("[%s]: ConnectionClosed: %s(%s)", self.__addr, close_code.name, close_code.value)
+                    self.on_connection_closed(close_code)
+                    if error.close_code == websockets.CloseCode.GOING_AWAY and self.__auto_reconnect:
+                        continue
 
-            except (
-                    websockets.exceptions.InvalidURI,
-                    websockets.exceptions.InvalidHandshake,
-                    websockets.exceptions.InvalidProxy,
-                    TimeoutError,
-                    OSError
-            ) as error:
-                _LOGGER.debug("[%s]: %s", self.__addr, error)
-                self.on_connect_error(error)
+                except (
+                        websockets.exceptions.InvalidURI,
+                        websockets.exceptions.InvalidHandshake,
+                        websockets.exceptions.InvalidProxy,
+                        TimeoutError,
+                        OSError
+                ) as error:
+                    _LOGGER.debug("[%s]: %s", self.__addr, error)
+                    self.on_connect_error(error)
 
-            except Exception:
-                _LOGGER.exception("[%s]: %s", self.__addr, traceback.format_exc())
-                await self.stop()
-                raise
+                except Exception:
+                    _LOGGER.exception("[%s]: %s", self.__addr, traceback.format_exc())
+                    raise
 
-            break
-
-        _LOGGER.debug("[%s]: Connect loop stopped", self.__addr)
-        # signal that the client has stopped
-        self.__stop_event.set()
+                break
+        finally:
+            _LOGGER.debug("[%s]: Connect loop stopped", self.__addr)
+            # signal that the client has stopped
+            self.__stop_event.set()
 
     async def _process_packet(self, packet: packets.ServerPacket):
 
