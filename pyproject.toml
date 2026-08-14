@@ -21,6 +21,7 @@ test = [
     "ruff>=0.11.13",
     "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
+    "pytest-timeout>=2.4.0"
 ]
 
 [tool.ruff.lint]
