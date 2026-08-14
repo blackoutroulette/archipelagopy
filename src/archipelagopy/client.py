@@ -182,8 +182,12 @@ class Client(CCInterface):
         Resolves the callback function for a given packet type.
         """
 
-        callback: Callable[..., Awaitable] | None = PACKET_CALLBACK_MAP.get(type(packet), None)(self)
-        return callback
+        callback: Callable[..., Awaitable] | None = PACKET_CALLBACK_MAP.get(type(packet), None)
+
+        if callback is None:
+            return None
+
+        return callback(self)
 
     async def _loop_handler(self):
 
