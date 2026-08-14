@@ -359,9 +359,8 @@ class Client(CCInterface):
             packet_list: list[packets.ServerPacket] = packets.PACKET_TYPE_ADAPTER.validate_json(js)
 
             packet: packets.ServerPacket
-            await asyncio.gather(*[
-                self._process_packet(packet) for packet in packet_list
-            ])
+            for packet in packet_list:
+                await self._process_packet(packet)
 
     @task_wrapper
     async def _send_loop(self):
