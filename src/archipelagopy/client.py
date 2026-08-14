@@ -280,7 +280,6 @@ class Client(CCInterface):
         ws: ClientConnection
         async with self._create_websocket_connection() as ws:
             self.__socket = ws
-            self._increase_reconnects()
 
             _LOGGER.debug("[%s]: Connected", self.__addr)
 
