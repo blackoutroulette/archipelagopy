@@ -35,7 +35,6 @@ __all__ = [
     "ClientPacket",
     "Connect",
     "ConnectUpdate",
-    "ConnectUpdate",
     "Connected",
     "ConnectionRefused",
     "DataPackage",
