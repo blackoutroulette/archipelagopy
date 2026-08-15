@@ -14,7 +14,6 @@ import websockets.exceptions
 from websockets.asyncio.client import ClientConnection
 
 from archipelagopy import packets
-from archipelagopy import structs
 from archipelagopy.callback_interface import ClientCallbackInterface as CCInterface
 
 _LOGGER: Final[logging.Logger] = logging.getLogger(__name__)
@@ -39,21 +38,6 @@ PACKET_CALLBACK_MAP: PacketCallbackMapType = MappingProxyType({
     packets.RoomUpdate: lambda x: cast(CCInterface, x).on_room_update,
     packets.SetReply: lambda x: cast(CCInterface, x).on_set_reply,
 })
-
-
-def json_default_encode(obj: object):
-    if isinstance(obj, packets.ClientPacket):
-        v: dict = {k: json_default_encode(v) for k, v in vars(obj).items()}
-        v["cmd"] = obj.__class__.__name__
-        return [v]
-
-    if isinstance(obj, structs.Struct):
-        v: dict = {k: json_default_encode(v) for k, v in vars(obj).items()}
-        v["class"] = obj.__class__.__name__
-        return v
-
-    return obj
-
 
 def packet_to_json(packet: packets.ClientPacket) -> str:
     """
@@ -95,19 +79,26 @@ def task_wrapper(func: Callable[..., Awaitable]) -> Callable[..., Awaitable]:
 
     return wrapper
 
+def get_ssl_context(secure: bool, ssl_context: SSLContext | None):
+    if secure:
+        return ssl.create_default_context() if ssl_context is None else ssl_context
+
+    return None
+
 
 class Client(CCInterface):
     # Accumulation period for reconnect attempts. Reconnect attempts which are older than this period will be ignored.
     RECONNECT_ACCUMULATION_PERIOD: float = 60  # seconds
 
     def __init__(self, port: int, host: str = "archipelago.gg", ssl_context: SSLContext | None = None,
-                 secure: bool = True, auto_reconnect: bool = False):
+                 secure: bool = True, auto_reconnect: bool = False, websocket_kwargs: dict | None = None ):
         """
         :param port: The port to connect to.
         :param host: The host to connect to. Defaults to "archipelago.gg".
         :param ssl_context: An optional SSLContext to use for secure connections.
         :param secure: Whether to use a secure connection (wss://) or not (ws://).
         :param auto_reconnect: Whether to automatically trying to reconnect.
+        :param websocket_kwargs: Overwrites parameters of websockets.connect()
          This only applies to when the server is going into standby or
          the server is already in standby during the connecting phase.
         """
@@ -115,8 +106,9 @@ class Client(CCInterface):
         super().__init__()
         self.__addr: str = f"wss://{host}:{port}" if secure else f"ws://{host}:{port}"
         self.__secure: bool = secure
-        self.__ssl_context = ssl.create_default_context() if ssl_context is None else ssl_context
+        self.__ssl_context: SSLContext | None = get_ssl_context(secure, ssl_context)
         self.__auto_reconnect: bool = auto_reconnect
+        self.__websocket_kwargs: dict | None = websocket_kwargs
 
         self.__socket: ClientConnection | None = None
         self.__run_task: asyncio.Task | None = None
@@ -168,6 +160,7 @@ class Client(CCInterface):
                 self._stop(),
                 name=f"{__name__}.stop_task[{self.__addr}]"
             )
+            await self.__stop_task
 
     @staticmethod
     def _exponential_backoff(attempt: int, max_wait: int = 60) -> int:
@@ -182,8 +175,12 @@ class Client(CCInterface):
         Resolves the callback function for a given packet type.
         """
 
-        callback: Callable[..., Awaitable] | None = PACKET_CALLBACK_MAP.get(type(packet), None)(self)
-        return callback
+        callback: Callable[..., Awaitable] | None = PACKET_CALLBACK_MAP.get(type(packet), None)
+
+        if callback is None:
+            return None
+
+        return callback(self)
 
     async def _loop_handler(self):
 
@@ -263,11 +260,13 @@ class Client(CCInterface):
     def _create_websocket_connection(self) -> websockets.connect:
         kwargs: dict = {
             "uri": self.__addr,
-            "max_size": None,  # Disable size limit for messages
         }
 
         if self.__secure:
             kwargs["ssl"] = self.__ssl_context
+
+        if self.__websocket_kwargs:
+            kwargs.update(self.__websocket_kwargs)
 
         return websockets.connect(**kwargs)
 
@@ -275,7 +274,6 @@ class Client(CCInterface):
         ws: ClientConnection
         async with self._create_websocket_connection() as ws:
             self.__socket = ws
-            self._increase_reconnects()
 
             _LOGGER.debug("[%s]: Connected", self.__addr)
 
@@ -296,43 +294,43 @@ class Client(CCInterface):
         await asyncio.sleep(backoff)
 
     async def _connect_wrapper(self):
-        while True:
-            try:
-                await self._connect()
-            except ConnectionRefusedError as error:
-                self.on_connect_error(error)
+        try:
+            while True:
+                try:
+                    await self._connect()
+                except ConnectionRefusedError as error:
+                    self.on_connect_error(error)
 
-                if self.__auto_reconnect:
-                    await self._handle_reconnect_backoff()
-                    continue
+                    if self.__auto_reconnect:
+                        await self._handle_reconnect_backoff()
+                        continue
 
-            except ConnectionClosedError as error:
-                close_code = error.close_code
-                _LOGGER.info("[%s]: ConnectionClosed: %s(%s)", self.__addr, close_code.name, close_code.value)
-                self.on_connection_closed(close_code)
-                if error.close_code == websockets.CloseCode.GOING_AWAY and self.__auto_reconnect:
-                    continue
+                except ConnectionClosedError as error:
+                    close_code = error.close_code
+                    _LOGGER.info("[%s]: ConnectionClosed: %s(%s)", self.__addr, close_code.name, close_code.value)
+                    self.on_connection_closed(close_code)
+                    if error.close_code == websockets.CloseCode.GOING_AWAY and self.__auto_reconnect:
+                        continue
 
-            except (
-                    websockets.exceptions.InvalidURI,
-                    websockets.exceptions.InvalidHandshake,
-                    websockets.exceptions.InvalidProxy,
-                    TimeoutError,
-                    OSError
-            ) as error:
-                _LOGGER.debug("[%s]: %s", self.__addr, error)
-                self.on_connect_error(error)
+                except (
+                        websockets.exceptions.InvalidURI,
+                        websockets.exceptions.InvalidHandshake,
+                        websockets.exceptions.InvalidProxy,
+                        TimeoutError,
+                        OSError
+                ) as error:
+                    _LOGGER.debug("[%s]: %s", self.__addr, error)
+                    self.on_connect_error(error)
 
-            except Exception:
-                _LOGGER.exception("[%s]: %s", self.__addr, traceback.format_exc())
-                await self.stop()
-                raise
+                except Exception:
+                    _LOGGER.exception("[%s]: %s", self.__addr, traceback.format_exc())
+                    raise
 
-            break
-
-        _LOGGER.debug("[%s]: Connect loop stopped", self.__addr)
-        # signal that the client has stopped
-        self.__stop_event.set()
+                break
+        finally:
+            _LOGGER.debug("[%s]: Connect loop stopped", self.__addr)
+            # signal that the client has stopped
+            self.__stop_event.set()
 
     async def _process_packet(self, packet: packets.ServerPacket):
 
@@ -354,9 +352,8 @@ class Client(CCInterface):
             packet_list: list[packets.ServerPacket] = packets.PACKET_TYPE_ADAPTER.validate_json(js)
 
             packet: packets.ServerPacket
-            await asyncio.gather(*[
-                self._process_packet(packet) for packet in packet_list
-            ])
+            for packet in packet_list:
+                await self._process_packet(packet)
 
     @task_wrapper
     async def _send_loop(self):

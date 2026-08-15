@@ -37,7 +37,7 @@ async def test_reconnect_on_server_standby():
             async with Client(port, host="localhost", secure=False, auto_reconnect=True) as client:
                 await stop_event.wait()
 
-        assert client._get_reconnect_frequency() == 2
+        assert client._get_reconnect_frequency() == 0
 
     await asyncio.wait_for(run_server(), timeout=1)
 
@@ -64,6 +64,7 @@ async def test_reconnect_on_connection_refused():
         times_connected += 1
         if times_connected >= 2:
             stop_event.set()
+            await asyncio.Event().wait()  # block until cancelled
 
         raise ConnectionRefusedError()
 
