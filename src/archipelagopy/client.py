@@ -14,7 +14,6 @@ import websockets.exceptions
 from websockets.asyncio.client import ClientConnection
 
 from archipelagopy import packets
-from archipelagopy import structs
 from archipelagopy.callback_interface import ClientCallbackInterface as CCInterface
 
 _LOGGER: Final[logging.Logger] = logging.getLogger(__name__)
@@ -39,21 +38,6 @@ PACKET_CALLBACK_MAP: PacketCallbackMapType = MappingProxyType({
     packets.RoomUpdate: lambda x: cast(CCInterface, x).on_room_update,
     packets.SetReply: lambda x: cast(CCInterface, x).on_set_reply,
 })
-
-
-def json_default_encode(obj: object):
-    if isinstance(obj, packets.ClientPacket):
-        v: dict = {k: json_default_encode(v) for k, v in vars(obj).items()}
-        v["cmd"] = obj.__class__.__name__
-        return [v]
-
-    if isinstance(obj, structs.Struct):
-        v: dict = {k: json_default_encode(v) for k, v in vars(obj).items()}
-        v["class"] = obj.__class__.__name__
-        return v
-
-    return obj
-
 
 def packet_to_json(packet: packets.ClientPacket) -> str:
     """
