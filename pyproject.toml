@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "archipelagopy"
-version = "0.1.0"
+version = "0.1.1"
 license = "MIT"
 authors = [
     { name = "BlackoutRoulette", email = "blackoutroulette@live.de" },
