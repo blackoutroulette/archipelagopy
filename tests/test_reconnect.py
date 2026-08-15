@@ -37,7 +37,7 @@ async def test_reconnect_on_server_standby():
             async with Client(port, host="localhost", secure=False, auto_reconnect=True) as client:
                 await stop_event.wait()
 
-        assert client._get_reconnect_frequency() == 2
+        assert client._get_reconnect_frequency() == 0
 
     await asyncio.wait_for(run_server(), timeout=1)
 

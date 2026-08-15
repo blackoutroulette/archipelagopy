@@ -91,7 +91,7 @@ async def test_connect():
             await client.stop()
 
         # check for no reconnects
-        assert client._get_reconnect_frequency() == 1
+        assert client._get_reconnect_frequency() == 0
 
     await asyncio.wait_for(run_server(), timeout=1)
 

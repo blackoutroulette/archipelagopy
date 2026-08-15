@@ -101,13 +101,14 @@ class Client(CCInterface):
     RECONNECT_ACCUMULATION_PERIOD: float = 60  # seconds
 
     def __init__(self, port: int, host: str = "archipelago.gg", ssl_context: SSLContext | None = None,
-                 secure: bool = True, auto_reconnect: bool = False):
+                 secure: bool = True, auto_reconnect: bool = False, websocket_kwargs: dict | None = None ):
         """
         :param port: The port to connect to.
         :param host: The host to connect to. Defaults to "archipelago.gg".
         :param ssl_context: An optional SSLContext to use for secure connections.
         :param secure: Whether to use a secure connection (wss://) or not (ws://).
         :param auto_reconnect: Whether to automatically trying to reconnect.
+        :param websocket_kwargs: Overwrites parameters of websockets.connect()
          This only applies to when the server is going into standby or
          the server is already in standby during the connecting phase.
         """
@@ -117,6 +118,7 @@ class Client(CCInterface):
         self.__secure: bool = secure
         self.__ssl_context = ssl.create_default_context() if ssl_context is None else ssl_context
         self.__auto_reconnect: bool = auto_reconnect
+        self.__websocket_kwargs: dict | None = websocket_kwargs
 
         self.__socket: ClientConnection | None = None
         self.__run_task: asyncio.Task | None = None
@@ -268,11 +270,13 @@ class Client(CCInterface):
     def _create_websocket_connection(self) -> websockets.connect:
         kwargs: dict = {
             "uri": self.__addr,
-            "max_size": None,  # Disable size limit for messages
         }
 
         if self.__secure:
             kwargs["ssl"] = self.__ssl_context
+
+        if self.__websocket_kwargs:
+            kwargs.update(self.__websocket_kwargs)
 
         return websockets.connect(**kwargs)
 
