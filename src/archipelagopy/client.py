@@ -79,6 +79,12 @@ def task_wrapper(func: Callable[..., Awaitable]) -> Callable[..., Awaitable]:
 
     return wrapper
 
+def get_ssl_context(secure: bool, ssl_context: SSLContext | None):
+    if secure:
+        return ssl.create_default_context() if ssl_context is None else ssl_context
+
+    return None
+
 
 class Client(CCInterface):
     # Accumulation period for reconnect attempts. Reconnect attempts which are older than this period will be ignored.
@@ -100,7 +106,7 @@ class Client(CCInterface):
         super().__init__()
         self.__addr: str = f"wss://{host}:{port}" if secure else f"ws://{host}:{port}"
         self.__secure: bool = secure
-        self.__ssl_context = ssl.create_default_context() if ssl_context is None else ssl_context
+        self.__ssl_context: SSLContext | None = get_ssl_context(secure, ssl_context)
         self.__auto_reconnect: bool = auto_reconnect
         self.__websocket_kwargs: dict | None = websocket_kwargs
 
