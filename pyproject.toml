@@ -5,6 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "archipelagopy"
 version = "0.1.0"
+license = "MIT"
 authors = [
     { name = "BlackoutRoulette", email = "blackoutroulette@live.de" },
 ]
@@ -15,6 +16,9 @@ dependencies = [
     "websockets>=15.0",
     "pydantic>=2.11.7"
 ]
+classifiers = [
+    "Typing :: Typed",
+]
 
 [project.optional-dependencies]
 test = [
@@ -23,6 +27,9 @@ test = [
     "pytest-asyncio>=1.1.0",
     "pytest-timeout>=2.4.0"
 ]
+
+[tool.setuptools.package-data]
+archipelagopy = ["py.typed"]
 
 [tool.ruff.lint]
 extend-select = [
