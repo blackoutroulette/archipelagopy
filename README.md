@@ -20,7 +20,7 @@ If you're new to Archipelago, see the [Archipelago setup guide](https://archipel
 
 archipelagopy can be installed using pip:
 ```bash
-pip install git+https://github.com/blackoutroulette/archipelagopy.git
+pip install archipelagopy
 ```
 
 # How to use
