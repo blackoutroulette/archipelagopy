@@ -18,7 +18,6 @@ __all__ = [
     "ClientPacket",
     "Connect",
     "ConnectUpdate",
-    "ConnectUpdate",
     "Get",
     "GetDataPackage",
     "LocationChecks",
