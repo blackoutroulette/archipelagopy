@@ -11,7 +11,7 @@ authors = [
 ]
 description = "A network client library for the Archipelago Randomizer"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "websockets>=15.0",
     "pydantic>=2.11.7"
@@ -19,7 +19,6 @@ dependencies = [
 classifiers = [
     "Typing :: Typed",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
