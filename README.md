@@ -170,3 +170,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 # Credits
 Documentation is partly or fully taken from the [Archipelago Network Protocol](https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/network%20protocol.md)
+
+# AI Disclosure
+Claude Code was used to generate the documentation (partly this README and the GitHub wiki), to review the codebase and identify bugs, and co-authored the PyPI publish workflow. The library's architecture, implementation, and test suite were written by the maintainer.
