@@ -1,8 +1,11 @@
 # archipelagopy - An API wrapper for Archipelago written in Python
+[![PyPI](https://img.shields.io/pypi/v/archipelagopy)](https://pypi.org/project/archipelagopy/) [![Python](https://img.shields.io/pypi/pyversions/archipelagopy)](https://pypi.org/project/archipelagopy/) [![License](https://img.shields.io/github/license/blackoutroulette/archipelagopy)](LICENSE) [![Tests](https://github.com/blackoutroulette/archipelagopy/actions/workflows/test.yml/badge.svg)](https://github.com/blackoutroulette/archipelagopy/actions/workflows/test.yml) [![codecov](https://codecov.io/gh/blackoutroulette/archipelagopy/branch/main/graph/badge.svg)](https://codecov.io/gh/blackoutroulette/archipelagopy)
+
 archipelagopy is an API wrapper for the [Archipelago](https://archipelago.gg/) Randomizer network, written in Python.
 It lets you build clients that connect to Archipelago multiworld servers to send and receive items, chat messages, and game state updates.
 
 If you're new to Archipelago, see the [Archipelago setup guide](https://archipelago.gg/tutorial/Archipelago/setup/en) to get a server running.
+
 
 # Features
 - **Type Safety**: Uses [Pydantic](https://docs.pydantic.dev/) for automatic data validation.

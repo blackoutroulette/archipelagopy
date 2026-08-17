@@ -18,6 +18,12 @@ dependencies = [
 ]
 classifiers = [
     "Typing :: Typed",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 
 [project.optional-dependencies]
@@ -25,7 +31,8 @@ test = [
     "ruff>=0.11.13",
     "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
-    "pytest-timeout>=2.4.0"
+    "pytest-timeout>=2.4.0",
+    "pytest-cov>=6.0.0"
 ]
 
 [tool.setuptools.package-data]
