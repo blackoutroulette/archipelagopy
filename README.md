@@ -6,7 +6,6 @@ It lets you build clients that connect to Archipelago multiworld servers to send
 
 If you're new to Archipelago, see the [Archipelago setup guide](https://archipelago.gg/tutorial/Archipelago/setup/en) to get a server running.
 
-
 # Features
 - **Type Safety**: Uses [Pydantic](https://docs.pydantic.dev/) for automatic data validation.
 - **Asynchronous**: Built on Python's [`asyncio`](https://docs.python.org/3/library/asyncio.html) for non-blocking I/O operations.
@@ -15,19 +14,16 @@ If you're new to Archipelago, see the [Archipelago setup guide](https://archipel
 - **Auto-Reconnect**: Optional automatic reconnection with exponential backoff.
 
 # Prerequisites
-
-- Python 3.10 or higher
+- Python 3.11+
 - Basic familiarity with Python's `async`/`await` syntax. If you haven't used asyncio before, see the [asyncio documentation](https://docs.python.org/3/library/asyncio.html) for an introduction.
 
 # How to install
-
 archipelagopy can be installed using pip:
 ```bash
 pip install archipelagopy
 ```
 
 # How to use
-
 A simple example of how to connect to an Archipelago server and send a connect packet to authenticate:
 
 ```python
@@ -77,12 +73,26 @@ Output:
 
 A more advanced example can be found in the `examples` directory of the repository, which demonstrates how to handle different packet types.
 
-# Callbacks
+# archipelagopy vs. CommonClient.py
+| Aspect | archipelagopy                                                               | CommonClient.py                                                                                   |
+|---|-----------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| Installation | ```pip install archipelagopy```, two dependencies, websockets and pydantic | Not a published package, only works from inside a full Archipelago repo clone                     |
+| Dependencies | Minimal                                                                     | Full app stack, kivy and kivymd for the GUI, cython, bsdiff4, and more                            |
+| Event loop | Loop agnostic, runs inside a host's existing loop or a background thread    | Owns the process, its canonical entry point calls ```asyncio.run()```                             |
+| Scope | Network protocol only, connect, send and receive, typed callbacks           | Full client foundation, networking, GUI, command processor, hint text formatting                  |
+| Packet handling | Pydantic models, runtime validated                                          | ```TypedDict``` and ```NamedTuple```, static typing only                                          |
+| Game or world awareness | None, protocol layer only                                                   | Deep integration with the ```worlds``` registry, per game options, item and location name lookups |
+| Maturity | New, version 0.1.x, one maintainer, no production track record yet          | Battle tested, underpins many of the official Python based per game clients                       |
+| Built in conveniences | None, you build your own text, GUI, or commands on top                      | ```/help```-style command processor, hint formatting, and more out of the box                           |
 
+Use **archipelagopy** when you are building something that needs to embed into a host you do not control the loop of, such as a bot, a tracker, or an existing app, when you want a minimal typed dependency, or when you are building a client for a game not shipped with AP and do not want the rest of the app included.
+
+Use **CommonClient.py** when you are building a full player facing client and want hint formatting, commands, and world and item lookups already solved, or when you want the thing every official client is built on and tested against.
+
+# Callbacks
 Callbacks are used to handle events in the Archipelago client. The `Client` class provides several callback methods that can be overridden to respond to specific events, such as when the client connects to the server, receives a packet, or disconnects.
 
 ## Callback overview
-
 The "Async" column indicates whether the callback must be defined with `async def` (Yes) or regular `def` (No).
 
 | Callback | Async | Parameter | Description |
@@ -108,7 +118,6 @@ The "Async" column indicates whether the callback must be defined with `async de
 `on_connect_error` and `on_connection_closed` are the only two synchronous callbacks (defined with `def` instead of `async def`). All other callbacks are async and must use `async def`.
 
 ## Overriding callbacks
-
 Callbacks can be replaced by assigning a new function directly on the client instance:
 
 ```python
@@ -138,7 +147,6 @@ class MyClient(Client):
 ```
 
 # Connection lifecycle
-
 Here is the typical sequence of events when connecting to an Archipelago server:
 
 1. You call `client.start()` to initiate the WebSocket connection
